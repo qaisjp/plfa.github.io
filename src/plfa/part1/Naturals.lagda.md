@@ -903,6 +903,42 @@ number.  For example, since `1100` encodes twelve, we should have:
 
     inc (x1 x1 x0 x1 nil) ≡ x0 x0 x1 x1 nil
 
+```
+inc : Bin → Bin
+inc nil = x0 nil
+inc (x0 x) = (x1 x)
+inc (x1 x) = (inc x)
+
+
+-- 00000 + 1 = 00001
+_ : inc (x0 nil) ≡ x1 nil
+_ = refl
+
+-- 00001 + 1 = 00010
+_ : inc (x1 nil) ≡ x0 x1 nil
+_ = refl
+
+-- 00010 + 1 = 00011
+_ : inc (x0 x1 nil) ≡ x1 x1 nil
+_ = refl
+
+-- 00011 + 1 = 00100
+_ : inc (x1 x1 nil) ≡ x0 x0 x1 nil
+_ =
+  begin
+    inc (x1 x1 nil)
+  ≡⟨⟩
+    inc (x1 (x1 nil))
+  ≡⟨⟩
+    (x0 (x1 (x1 nil)))
+  ∎
+
+-- inc (x1 (x1 (x0 (x1 nil))))
+_ : inc (x1 x1 x0 x1 nil) ≡ x0 x0 x1 x1 nil
+_ = refl
+
+```
+
 Confirm that this gives the correct answer for the bitstrings
 encoding zero through four.
 
