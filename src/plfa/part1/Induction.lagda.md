@@ -81,6 +81,19 @@ associative but is not commutative.
 
 ```
 -- Your code goes here
+
+-- has identity
+-- and associative (parens anywhere)
+-- and commutative (order doesn't matter)
+-- and distributes over one another
+--
+-- Not: +, ∸, *, /, %
+
+
+-- An identity, is associative, but not commutative
+-- Seems to be %, but not sure if it has the same left & right identity??
+-- Associative: (6 % 4) % 5 and 6 % (4 % 5)
+-- NOT associative: 6 % (4 % 3) and (6 % 4) % 3
 ```
 
 
