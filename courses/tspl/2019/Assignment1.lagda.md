@@ -40,16 +40,84 @@ open import plfa.part1.Relations using (_<_; z<s; s<s; zero; suc; even; odd)
 
 Write out `7` in longhand.
 
+```
+_ =
+      begin
+        7
+      ≡⟨⟩
+        (suc (suc (suc (suc (suc (suc (suc zero)))))))
+      ∎
+```
 
 #### Exercise `+-example` (practice) {#plus-example}
 
 Compute `3 + 4`, writing out your reasoning as a chain of equations.
+
+```
+_ : 3 + 4 ≡ 7
+_ =
+  begin
+    3 + 4
+  ≡⟨⟩ -- is shorthand for
+    (suc (suc (suc zero)))  + (suc (suc (suc (suc zero))))
+  ≡⟨⟩ -- inducive case
+    suc ((suc (suc zero)) + (suc (suc (suc (suc zero)))))
+  ≡⟨⟩ -- inductive case
+    suc (suc ((suc zero) + (suc (suc (suc (suc zero))))))
+  ≡⟨⟩ -- inductive case
+    suc (suc (suc (suc (suc (suc (suc zero))))))
+  ∎
+
+-- Or more compactly, we can write
+_ : 3 + 4 ≡ 7
+_ =
+  begin
+    3 + 4
+  ≡⟨⟩
+    suc (2 + 4)
+  ≡⟨⟩
+    suc (suc (1 + 4))
+  ≡⟨⟩
+    suc (suc (suc (0 + 4)))
+  ≡⟨⟩
+    suc (suc (suc (4)))
+  ≡⟨⟩
+    7
+  ∎
+
+-- Or even, if we're lazy, we can use the "reflexive"
+-- It knows 3 + 4, so it can immediately check if it is the same as 7
+_ : 3 + 4 ≡ 7
+_ = refl
+```
 
 
 #### Exercise `*-example` (practice) {#times-example}
 
 Compute `3 * 4`, writing out your reasoning as a chain of equations.
 
+
+```
+_ : 3 * 4 ≡ 12
+_ =
+  begin
+    3 * 4
+  ≡⟨⟩
+    4 + (2 * 4)
+  ≡⟨⟩
+    4 + (4 + (1 * 4))
+  ≡⟨⟩
+    4 + (4 + (4 + (0 * 4)))
+  ≡⟨⟩
+    4 + (4 + (4 + 0))
+  ≡⟨⟩
+    4 + (4 + 4)
+  ≡⟨⟩
+    4 + 8
+  ≡⟨⟩
+    12
+  ∎
+```
 
 #### Exercise `_^_` (recommended) {#power}
 
@@ -58,13 +126,74 @@ Define exponentiation, which is given by the following equations.
     n ^ 0        =  1
     n ^ (1 + m)  =  n * (n ^ m)
 
+```
+_^_ : ℕ → ℕ
+n ^ zero = 1
+n ^ (suc m) = n * (n ^ m)
+```
+
 Check that `3 ^ 4` is `81`.
+
+```
+_ : 3 ^ 4 ≡ 81
+_ =
+  begin
+    3 ^ 4
+  ≡⟨⟩
+    3 * (3 ^ 3)
+  ≡⟨⟩
+    3 * (3 * (3 ^ 2))
+  ≡⟨⟩
+    3 * (3 * (3 * (3 ^ 1)))
+  ≡⟨⟩
+    3 * (3 * (3 * (3 * (3 ^ 0))))
+  ≡⟨⟩
+    3 * (3 * (3 * (3 * 1)))
+  ≡⟨⟩
+    3 * (3 * (3 * 3))
+  ≡⟨⟩
+    3 * (3 * 9)
+  ≡⟨⟩
+    3 * (27)
+  ≡⟨⟩
+    81
+  ∎
+```
 
 
 #### Exercise `∸-examples` (recommended) {#monus-examples}
 
 Compute `5 ∸ 3` and `3 ∸ 5`, writing out your reasoning as a chain of equations.
 
+```
+_ : 5 ∸ 3 ≡ 2
+_ =
+  begin
+    5 ∸ 3
+  ≡⟨⟩
+    4 ∸ 2
+  ≡⟨⟩
+    3 ∸ 1
+  ≡⟨⟩
+    2 ∸ 0
+  ≡⟨⟩
+    2
+  ∎
+
+_ : 3 ∸ 5 ≡ 0
+_ =
+  begin
+    3 ∸ 5
+  ≡⟨⟩
+    2 ∸ 4
+  ≡⟨⟩
+    1 ∸ 3
+  ≡⟨⟩
+    0 ∸ 2
+  ≡⟨⟩
+    0
+  ∎
+```
 
 #### Exercise `Bin` (stretch) {#Bin}
 
