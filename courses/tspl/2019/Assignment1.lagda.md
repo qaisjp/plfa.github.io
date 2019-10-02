@@ -8,7 +8,7 @@ permalink : /TSPL/2019/Assignment1/
 module Assignment1 where
 ```
 
-## YOUR NAME AND EMAIL GOES HERE
+## Qais Patankar s1620208@inf.ed.ac.uk
 
 ## Introduction
 
