@@ -182,8 +182,8 @@ _ =
 Compute `5 ∸ 3` and `3 ∸ 5`, writing out your reasoning as a chain of equations.
 
 ```
-_ : 5 ∸ 3 ≡ 2
-_ =
+∸-example : 5 ∸ 3 ≡ 2
+∸-example =
   begin
     5 ∸ 3
   ≡⟨⟩
@@ -196,8 +196,8 @@ _ =
     2
   ∎
 
-_ : 3 ∸ 5 ≡ 0
-_ =
+∸-example′ : 3 ∸ 5 ≡ 0
+∸-example′ =
   begin
     3 ∸ 5
   ≡⟨⟩
@@ -312,9 +312,60 @@ between the two representations.
     to   : ℕ → Bin
     from : Bin → ℕ
 
+```
+to : ℕ → Bin
+to zero = x0 nil
+to (suc n) = inc (to n)
+
+from : Bin → ℕ
+from nil = zero
+from (x0 x) = 2 * (from x)
+-- "shift left and add one"
+from (x1 n) = 2 * (from n) + 1
+```
+
 For the former, choose the bitstring to have no leading zeros if it
 represents a positive natural, and represent zero by `x0 nil`.
 Confirm that these both give the correct answer for zero through four.
+
+```
+-------
+-- from
+-------
+
+_ : from (x0 nil) ≡ 0
+_ = refl
+
+_ : from (x1 nil)  ≡ 1
+_ = refl
+
+_ : from (x0 x1 nil) ≡ 2
+_ = refl
+
+_ : from (x1 x1 nil) ≡ 3
+_ = refl
+
+_ : from (x0 x0 x1 nil) ≡ 4
+_ = refl
+
+-----
+-- to
+-----
+_ : to 0 ≡ x0 nil
+_ = refl
+
+_ : to 1 ≡ x1 nil
+_ = refl
+
+_ : to 2 ≡ x0 x1 nil
+_ = refl
+
+_ : to 3 ≡ x1 x1 nil
+_ = refl
+
+_ : to 4 ≡ x0 x0 x1 nil
+_ = refl
+```
 
 ## Induction
 
@@ -348,6 +399,20 @@ the following function from the standard library:
     sym : ∀ {m n : ℕ} → m ≡ n → n ≡ m
 
 
+```
++-swap : ∀ (m n p : ℕ) → m + (n + p) ≡ n + (m + p)
++-swap m n p =
+  begin
+    m + (n + p)
+  ≡⟨ +-comm m (n + p) ⟩
+    (n + p) + m
+  ≡⟨ +-assoc n p m ⟩
+    n + (p + m)
+  ≡⟨ cong (n +_) (+-comm p m) ⟩
+    n + (m + p)
+  ∎
+```
+
 #### Exercise `*-distrib-+` (recommended) {#times-distrib-plus}
 
 Show multiplication distributes over addition, that is,
@@ -356,6 +421,21 @@ Show multiplication distributes over addition, that is,
 
 for all naturals `m`, `n`, and `p`.
 
+``
+*-distrib-+ : ∀ (m n p : ℕ) → (m + n) * p ≡ m * p + n * p
+*-distrib-+ zero n p = refl
+
+*-distrib-+ m n p =
+  begin
+    (m + n) * p
+  ≡⟨⟩
+    
+  ≡⟨⟩
+    (m * p) + (n * p)
+  ≡⟨⟩
+    m * p + n * p
+  ∎
+``
 #### Exercise `*-assoc` (recommended) {#times-assoc}
 
 Show multiplication is associative, that is,
