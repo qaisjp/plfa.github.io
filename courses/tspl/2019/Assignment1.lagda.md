@@ -465,21 +465,33 @@ Show multiplication distributes over addition, that is,
 
 for all naturals `m`, `n`, and `p`.
 
-``
+```
 *-distrib-+ : ∀ (m n p : ℕ) → (m + n) * p ≡ m * p + n * p
-*-distrib-+ zero n p = refl
-
-*-distrib-+ m n p =
+*-distrib-+ zero n p =
   begin
-    (m + n) * p
+    (zero + n) * p
   ≡⟨⟩
-    
+    n * p
   ≡⟨⟩
-    (m * p) + (n * p)
-  ≡⟨⟩
-    m * p + n * p
+    zero * p + n * p
   ∎
-``
+
+*-distrib-+ (suc m) n p =
+  begin
+    (suc m + n) * p
+  ≡⟨⟩
+    (suc (m + n)) * p
+  ≡⟨⟩ -- (*)   (suc x) * y ≡ y + (x * y)
+    p + ( (m + n) * p )
+  ≡⟨ cong (p +_ ) (*-distrib-+ m n p)  ⟩ 
+    p + ( (m * p) + (n * p) )
+  ≡⟨ sym (+-assoc p (m * p) (n * p)) ⟩ -- symmetric on (x + y) + z ≡ x + (y + z)
+    (p + (m * p)) + (n * p)
+  ≡⟨⟩
+    ( (suc m) * p ) + (n * p)
+  ∎
+```
+
 #### Exercise `*-assoc` (recommended) {#times-assoc}
 
 Show multiplication is associative, that is,
@@ -487,6 +499,20 @@ Show multiplication is associative, that is,
     (m * n) * p ≡ m * (n * p)
 
 for all naturals `m`, `n`, and `p`.
+
+```
+*-assoc : ∀ (m n p) → (m * n) * p ≡ m * (n * p)
+*-assoc zero n p = refl
+*-assoc (suc m) n p =
+  begin
+    ((suc m) * n) * p
+  ≡⟨⟩
+    (n + (m * n)) * p
+  ≡⟨ *-distrib-+ n (m * n) p ⟩
+    (n * p) + ((m * n) * p)
+  ≡⟨ cong ((n * p) +_) (*-assoc m n p) ⟩
+    refl
+```
 
 #### Exercise `*-comm` (practice) {#times-comm}
 
