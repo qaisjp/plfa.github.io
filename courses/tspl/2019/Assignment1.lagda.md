@@ -143,7 +143,7 @@ Define exponentiation, which is given by the following equations.
     n ^ (1 + m)  =  n * (n ^ m)
 
 ```
-_^_ : ℕ → ℕ
+_^_ : ℕ → ℕ → ℕ
 n ^ zero = 1
 n ^ (suc m) = n * (n ^ m)
 ```
