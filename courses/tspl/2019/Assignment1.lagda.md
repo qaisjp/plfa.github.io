@@ -238,6 +238,13 @@ Define a function
 
     inc : Bin → Bin
 
+```
+inc : Bin → Bin
+inc nil = x1 nil
+inc (x0 a) = x1 a
+inc (x1 a) = x0 (inc a)
+```
+
 that converts a bitstring to the bitstring for the next higher
 number.  For example, since `1100` encodes twelve, we should have
 
@@ -245,6 +252,59 @@ number.  For example, since `1100` encodes twelve, we should have
 
 Confirm that this gives the correct answer for the bitstrings
 encoding zero through four.
+
+```
+-- dec 0 is bin 0 which is x0 nil
+_ : inc (x0 nil) ≡ x1 nil
+_ =
+  begin
+    inc (x0 nil)
+  ≡⟨⟩
+    (x1 nil)
+  ∎
+
+-- dec 1 is bin 1 which is x1 nil
+_ : inc (x1 nil) ≡ x0 x1 nil
+_ =
+  begin
+    inc (x1 nil)
+  ≡⟨⟩
+    x0 inc nil
+  ≡⟨⟩
+    x0 x1 nil
+  ∎
+
+-- dec 2 is bin 10 which is x0 x1 nil
+_ : inc (x0 x1 nil) ≡ x1 x1 nil
+_ =
+  begin
+    inc (x0 x1 nil)
+  ≡⟨⟩
+    x1 x1 nil
+  ∎
+
+-- dec 3 is bin 11 which is x1 x1 nil
+_ : inc (x1 x1 nil) ≡ x0 x0 x1 nil
+_ =
+  begin
+    inc (x1 x1 nil)
+  ≡⟨⟩
+    x0 inc (x1 nil)
+  ≡⟨⟩
+    x0 x0 inc nil
+  ≡⟨⟩
+    x0 x0 x1 nil
+  ∎
+
+-- dec 4 is bin 100 which is x0 x0 x1 nil
+_ : inc (x0 x0 x1 nil) ≡ x1 x0 x1 nil
+_ =
+  begin
+    inc (x0 x0 x1 nil)
+  ≡⟨⟩
+    x1 x0 x1 nil
+  ∎
+```
 
 Using the above, define a pair of functions to convert
 between the two representations.
