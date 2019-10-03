@@ -501,7 +501,7 @@ Show multiplication is associative, that is,
 for all naturals `m`, `n`, and `p`.
 
 ```
-*-assoc : ∀ (m n p) → (m * n) * p ≡ m * (n * p)
+*-assoc : ∀ (m n p : ℕ) → (m * n) * p ≡ m * (n * p)
 *-assoc zero n p = refl
 *-assoc (suc m) n p =
   begin
@@ -584,6 +584,17 @@ Show that multiplication is monotonic with regard to inequality.
 #### Exercise `<-trans` (recommended) {#less-trans}
 
 Show that strict inequality is transitive.
+
+```
+<-trans : ∀ {m n p : ℕ}
+  → m < n
+  → n < p
+    -----
+  → m < p
+
+<-trans z<s (s<s n<p) = z<s
+<-trans (s<s m<n) (s<s n<p) = s<s (<-trans m<n n<p)
+```
 
 #### Exercise `trichotomy` (practice) {#trichotomy}
 
