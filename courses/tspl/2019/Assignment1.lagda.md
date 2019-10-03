@@ -319,7 +319,7 @@ to (suc n) = inc (to n)
 
 from : Bin → ℕ
 from nil = zero
-from (x0 x) = 2 * (from x)
+from (x0 x) = 2 * from x
 -- "shift left and add one"
 from (x1 n) = 2 * (from n) + 1
 ```
@@ -346,7 +346,22 @@ _ : from (x1 x1 nil) ≡ 3
 _ = refl
 
 _ : from (x0 x0 x1 nil) ≡ 4
-_ = refl
+_ =
+  begin
+    from (x0 x0 x1 nil)
+  ≡⟨⟩
+    2 * from (x0 x1 nil)
+  ≡⟨⟩
+    2 * (2 * from (x1 nil))
+  ≡⟨⟩
+    2 * (2 * (2 * (from nil) + 1))
+  ≡⟨⟩
+    2 * (2 * (2 * zero + 1))
+  ≡⟨⟩
+    2 * (2 * (1))
+  ≡⟨⟩
+    2 * 2
+  ∎
 
 -----
 -- to
@@ -364,7 +379,36 @@ _ : to 3 ≡ x1 x1 nil
 _ = refl
 
 _ : to 4 ≡ x0 x0 x1 nil
-_ = refl
+_ =
+  begin
+    to 4
+  ≡⟨⟩
+    to (suc 3)
+  ≡⟨⟩
+    inc (to 3)
+  ≡⟨⟩
+    inc (to (suc 2))
+  ≡⟨⟩
+    inc (inc (to 2))
+  ≡⟨⟩
+    inc (inc (to (suc 1)))
+  ≡⟨⟩
+    inc (inc (inc (to 1)))
+  ≡⟨⟩
+    inc (inc (inc (to (suc 0))))
+  ≡⟨⟩
+    inc (inc (inc (inc (to 0))))
+  ≡⟨⟩
+    inc (inc (inc (inc (nil))))
+  ≡⟨⟩
+    inc (inc (inc (x1 nil)))
+  ≡⟨⟩
+    inc (inc (x0 x1 nil))
+  ≡⟨⟩
+    inc (x1 x1 nil)
+  ≡⟨⟩
+    x0 x0 x1 nil
+  ∎
 ```
 
 ## Induction
