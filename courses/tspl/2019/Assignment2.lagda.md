@@ -8,7 +8,7 @@ permalink : /TSPL/2019/Assignment2/
 module Assignment2 where
 ```
 
-## YOUR NAME AND EMAIL GOES HERE
+## Qais Patankar - s1620208
 
 ## Introduction
 
@@ -89,6 +89,7 @@ regard to inequality.  Rewrite all of `+-monoˡ-≤`, `+-monoʳ-≤`, and `+-mon
 
 ```
 -- Your code goes here
+
 ```
 
 ## Isomorphism
@@ -147,6 +148,22 @@ Why do `to` and `from` not form an isomorphism?
 
 ## Connectives
 
+
+```
+-- This is a test, please don't touch me
+_+′_ : ℕ → ℕ → ℕ
+m +′ zero  = m
+m +′ suc n = suc (m +′ n)
+
+same-app : ∀ (m n : ℕ) → m +′ n ≡ m + n
+same-app m n rewrite +-comm m n = helper m n
+  where
+    helper : ∀ (m n : ℕ) → m +′ n ≡ n + m
+    helper m zero = refl
+    helper m (suc n) = cong suc (helper m n)
+-- test over, now you can touch me
+```
+
 #### Exercise `⇔≃×` (recommended)
 
 Show that `A ⇔ B` as defined [earlier]({{ site.baseurl }}/Isomorphism/#iff)
@@ -154,6 +171,9 @@ is isomorphic to `(A → B) × (B → A)`.
 
 ```
 -- Your code goes here
+⇔≃× : ∀ {A B : Set} → A ⇔ B ≃ (A → B) × (B → A)
+⇔≃× = record { to = {!!} ; from = {!!} ; from∘to = {!!} ; to∘from = {!!} } 
+
 ```
 
 #### Exercise `⊎-comm` (recommended)
