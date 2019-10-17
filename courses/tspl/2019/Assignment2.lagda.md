@@ -411,29 +411,43 @@ of two stable formulas is stable.
 #### Exercise `∀-distrib-×` (recommended)
 
 Show that universals distribute over conjunction:
-```
+
 postulate
   ∀-distrib-× : ∀ {A : Set} {B C : A → Set} →
     (∀ (x : A) → B x × C x) ≃ (∀ (x : A) → B x) × (∀ (x : A) → C x)
-```
+
 Compare this with the result (`→-distrib-×`) in
 Chapter [Connectives]({{ site.baseurl }}/Connectives/).
 
-
-#### Exercise `⊎∀-implies-∀⊎` (practice)
-
-Show that a disjunction of universals implies a universal of disjunctions:
 ```
-postulate
-  ⊎∀-implies-∀⊎ : ∀ {A : Set} {B C : A → Set} →
-    (∀ (x : A) → B x) ⊎ (∀ (x : A) → C x)  →  ∀ (x : A) → B x ⊎ C x
+∀-distrib-× : ∀ {A : Set} {B C : A → Set} →
+  (∀ (x : A) → B x × C x) ≃ (∀ (x : A) → B x) × (∀ (x : A) → C x)
+_≃_.to ∀-distrib-× = λ ∀→× → ⟨ (λ { x → proj₁ (∀→× x)}) , (λ x →  proj₂ (∀→× x))  ⟩
+_≃_.from ∀-distrib-× = λ { ⟨ A→Bx , A→∁x ⟩ → λ x → ⟨ A→Bx x , A→∁x x ⟩ }
+_≃_.from∘to ∀-distrib-× = λ x → refl
+_≃_.to∘from ∀-distrib-× = λ y → refl
+
+-- Comparing with →-distrib-× in Connectives, the proof is quite similar.
+-- This proof, however, did not require the use of `extensionality`.
+-- TODO
+
+
 ```
-Does the converse hold? If so, prove; if not, explain why.
 
+###-- # Exercise `⊎∀-implies-∀⊎` (practice)
 
-#### Exercise `∀-×` (practice)
+S-- how that a disjunction of universals implies a universal of disjunctions:
+`-- ``
+p-- ostulate
+ --  ⊎∀-implies-∀⊎ : ∀ {A : Set} {B C : A → Set} →
+ --    (∀ (x : A) → B x) ⊎ (∀ (x : A) → C x)  →  ∀ (x : A) → B x ⊎ C x
+`-- ``
+-- Does the converse hold? If so, prove; if not, explain why.
+-- 
 
-Consider the following type.
+#### Exercise `∀-×` (practice)-- 
+
+Consider the following type-- .-- 
 ```
 data Tri : Set where
   aa : Tri
