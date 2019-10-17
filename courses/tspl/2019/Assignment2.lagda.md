@@ -556,8 +556,14 @@ Using the above, establish that there is an isomorphism between `ℕ` and
 
 Analogous to the function above, define a function to decide strict inequality:
 ```
-postulate
-  _<?_ : ∀ (m n : ℕ) → Dec (m < n)
+-- postulate
+_<?_ : ∀ (m n : ℕ) → Dec (m < n)
+zero <? zero = no (λ ())
+zero <? suc n = yes z<s
+suc m <? zero = no (λ ())
+suc m <? suc n  with (m <? n)
+...| yes m<n = yes (s<s m<n) 
+...| no  m<n = no (λ { (s<s x) → m<n x}  )
 ```
 
 ```
