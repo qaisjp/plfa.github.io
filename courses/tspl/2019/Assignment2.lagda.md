@@ -121,7 +121,24 @@ record _⇔_ (A B : Set) : Set where
 Show that equivalence is reflexive, symmetric, and transitive.
 
 ```
--- Your code goes here
+-- Your code here plese
+⇔-refl : ∀ {A : Set} → A ⇔ A
+⇔-refl = record { to = λ x → x; from = λ z → z }
+
+⇔-sym : ∀ {A B : Set} → A ⇔ B → B ⇔ A
+⇔-sym record { to = to ; from = from } = record { to = from ; from = to }
+
+⇔-trans : ∀ {A B C : Set}
+  → A ⇔ B
+  → B ⇔ C
+    -----
+  → A ⇔ C
+-- ⇔-trans record { to = to₁ ; from = from₁ } record { to = to ; from = from } = record { to = λ z → to (to₁ z) ; from = λ x →  from₁ (from x)  }
+
+⇔-trans A⇔B B⇔C = record { to = λ z → _⇔_.to B⇔C (_⇔_.to A⇔B z) ; from = 
+  λ x → _⇔_.from A⇔B (_⇔_.from B⇔C x)
+ }
+
 ```
 
 #### Exercise `Bin-embedding` (stretch) {#Bin-embedding}
@@ -149,7 +166,7 @@ Why do `to` and `from` not form an isomorphism?
 ## Connectives
 
 
-```
+
 -- This is a test, please don't touch me
 _+′_ : ℕ → ℕ → ℕ
 m +′ zero  = m
@@ -162,7 +179,7 @@ same-app m n rewrite +-comm m n = helper m n
     helper m zero = refl
     helper m (suc n) = cong suc (helper m n)
 -- test over, now you can touch me
-```
+
 
 #### Exercise `⇔≃×` (recommended)
 
@@ -171,10 +188,17 @@ is isomorphic to `(A → B) × (B → A)`.
 
 ```
 -- Your code goes here
-⇔≃× : ∀ {A B : Set} → A ⇔ B ≃ (A → B) × (B → A)
-⇔≃× = record { to = {!!} ; from = {!!} ; from∘to = {!!} ; to∘from = {!!} } 
 
+⇔≃× : ∀ {A B : Set} → A ⇔ B ≃ (A → B) × (B → A)
+⇔≃× =
+  record
+    { to = λ x → ⟨  _⇔_.to x , _⇔_.from x ⟩
+    ; from =  λ x →  record { to = proj₁ x ; from = proj₂ x }
+    ; from∘to = {!!}
+    ; to∘from = {!!}
+    }
 ```
+
 
 #### Exercise `⊎-comm` (recommended)
 
