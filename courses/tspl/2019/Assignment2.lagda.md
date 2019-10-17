@@ -238,6 +238,15 @@ Show empty is the left identity of sums up to isomorphism.
 
 ```
 -- Your code goes here
+⊥-identityˡ : ∀ {A : Set} → ⊥ ⊎ A ≃ A
+⊥-identityˡ =
+  record
+    { to = (λ { (inj₂ a) → a }) 
+    ; from = inj₂
+    ; from∘to = λ { (inj₂ y) → refl}
+    ; to∘from = λ y → refl
+    }
+
 ```
 
 #### Exercise `⊥-identityʳ` (practice)
