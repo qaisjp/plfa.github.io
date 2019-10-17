@@ -270,11 +270,16 @@ This is called a _weak distributive law_. Give the corresponding
 distributive law, and explain how it relates to the weak version.
 
 ```
--- Your code goes here
 ⊎-weak-× : ∀ {A B C : Set} → (A ⊎ B) × C → A ⊎ (B × C)
 ⊎-weak-× ⟨ inj₁ a , c ⟩ = inj₁ a
 ⊎-weak-× ⟨ inj₂ b , c ⟩ = inj₂ ⟨ b , c ⟩
+
+-- Corresponding distributive law, from the texbook:
+postulate
+  ×-distrib-⊎ : ∀ {A B C : Set} → (A ⊎ B) × C ≃ (A × C) ⊎ (B × C)
 ```
+
+
 
 #### Exercise `⊎×-implies-×⊎` (practice)
 
@@ -299,6 +304,7 @@ is irreflexive, that is, `n < n` holds for no `n`.
 
 ```
 -- Your code goes here
+
 ```
 
 
