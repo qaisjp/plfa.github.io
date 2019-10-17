@@ -255,6 +255,8 @@ Show empty is the right identity of sums up to isomorphism.
 
 ```
 -- Your code goes here
+⊥-identityʳ : ∀ {A : Set} → A ⊎ ⊥ ≃ A
+⊥-identityʳ = record { to = λ { (inj₁ x) → x} ; from = inj₁ ; from∘to = λ { (inj₁ x) → refl} ; to∘from = λ y → refl }
 ```
 
 #### Exercise `⊎-weak-×` (recommended)
