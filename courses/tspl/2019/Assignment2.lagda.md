@@ -194,8 +194,8 @@ is isomorphic to `(A → B) × (B → A)`.
   record
     { to = λ x → ⟨  _⇔_.to x , _⇔_.from x ⟩
     ; from =  λ x →  record { to = proj₁ x ; from = proj₂ x }
-    ; from∘to = {!!}
-    ; to∘from = {!!}
+    ; from∘to = λ y → refl
+    ; to∘from = λ y → refl
     }
 ```
 
