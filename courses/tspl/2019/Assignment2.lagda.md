@@ -462,9 +462,18 @@ Show that `∀ (x : Tri) → B x` is isomorphic to `B aa × B bb × B cc`.
 
 Show that existentials distribute over disjunction:
 ```
-postulate
-  ∃-distrib-⊎ : ∀ {A : Set} {B C : A → Set} →
-    ∃[ x ] (B x ⊎ C x) ≃ (∃[ x ] B x) ⊎ (∃[ x ] C x)
+--postulate
+∃-distrib-⊎ : ∀ {A : Set} {B C : A → Set} →
+  ∃[ x ] (B x ⊎ C x) ≃ (∃[ x ] B x) ⊎ (∃[ x ] C x)
+
+∃-distrib-⊎ =
+  record
+    { to = λ { ⟨ x , inj₁ x₁ ⟩ → inj₁ ⟨ x , x₁ ⟩ ; ⟨ x , inj₂ y ⟩ → inj₂ ⟨ x , y ⟩}
+    ; from = λ { (inj₁ ⟨ a , bx ⟩) → ⟨ a , inj₁ bx ⟩ ; (inj₂ ⟨ a , cx ⟩) → ⟨ a , inj₂ cx ⟩}
+    ; from∘to = λ { ⟨ a , inj₁ x ⟩ → refl ; ⟨ a , inj₂ y ⟩ → refl}
+    ; to∘from = λ { (inj₁ x) → refl ; (inj₂ y) → refl }
+--    ; to∘from = λ { (inj₁ ⟨ a , bx ⟩) → refl ; (inj₂ ⟨ fst , snd ⟩) → refl}
+    }
 ```
 
 
