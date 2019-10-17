@@ -389,8 +389,17 @@ of two stable formulas is stable.
 
 ```
 -- Your code goes here
-¬¬-stable : ∀ {A : Set} → ¬ A → Stable (¬ A)
-¬¬-stable x x₁ = λ z → x₁ (λ z₁ → z₁ z)
+¬¬-stable : ∀ {A : Set} → Stable (¬ A)
+¬¬-stable x₁ = λ z → x₁ (λ z₁ → z₁ z)
+
+
+--¬×¬-stable : ∀ {A B : Set} → Stable ( (Stable A) × (Stable B) )
+--¬×¬-stable = λ x → ⟨ (λ { x₁ → {! !}}) , {!!} ⟩
+
+¬×¬-stable : ∀ {A B : Set} → (Stable A) → (Stable B) → Stable (A × B)
+¬×¬-stable a b = λ x → ⟨ a (λ z → x (λ z₁ → z (proj₁ z₁))) , b (λ z → x (λ z₁ → z (proj₂ z₁))) ⟩
+
+
 ```
 
 ## Quantifiers
