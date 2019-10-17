@@ -360,6 +360,9 @@ Do we also have the following?
 If so, prove; if not, can you give a relation weaker than
 isomorphism that relates the two sides?
 
+we don't know which one is false on the left hand side,
+so we dunno which one on the right hand side is true
+
 #### Exercise `Classical` (stretch)
 
 Consider the following principles:
