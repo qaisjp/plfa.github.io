@@ -518,11 +518,13 @@ Show that `y ≤ z` holds if and only if there exists a `x` such that
 
 Show that existential of a negation implies negation of a universal:
 ```
-postulate
-  ∃¬-implies-¬∀ : ∀ {A : Set} {B : A → Set}
-    → ∃[ x ] (¬ B x)
-      --------------
-    → ¬ (∀ x → B x)
+--postulate
+∃¬-implies-¬∀ : ∀ {A : Set} {B : A → Set}
+  → ∃[ x ] (¬ B x)
+    --------------
+  → ¬ (∀ x → B x)
+
+∃¬-implies-¬∀ ⟨ a , ¬Bx ⟩ = λ x → ¬Bx (x a)
 ```
 Does the converse hold? If so, prove; if not, explain why.
 
