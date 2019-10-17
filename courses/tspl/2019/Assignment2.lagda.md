@@ -305,6 +305,8 @@ is irreflexive, that is, `n < n` holds for no `n`.
 ```
 -- Your code goes here
 
+<-irreflexive : ∀ {n : ℕ} → (n < n) → ⊥
+<-irreflexive = λ { (s<s x) → <-irreflexive x }
 ```
 
 
