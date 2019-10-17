@@ -338,6 +338,18 @@ This result is an easy consequence of something we've proved previously.
 
 ```
 -- Your code goes here
+⊎-dual-× : ∀ {A B : Set} → ¬ (A ⊎ B) ≃ (¬ A) × (¬ B)
+⊎-dual-× =
+  record
+    { to = λ z → ⟨ (λ x → z (inj₁ x)) , (λ x → z (inj₂ x)) ⟩
+    ; from = λ { ⟨ fst , snd ⟩ (inj₁ x) → fst x ; ⟨ fst , snd ⟩ (inj₂ y) → snd y}
+    ; from∘to = λ {x →  extensionality λ { x₁ →  ⊥-elim (x x₁) }}
+    ; to∘from = λ { ⟨ fst , snd ⟩ → refl}
+    }
+
+-- For some reason this doesn't work?
+-- open import plfa.part1.Connectives using (→-distrib-⊎)
+-- ⊎-dual-× = →-distrib-⊎
 ```
 
 
