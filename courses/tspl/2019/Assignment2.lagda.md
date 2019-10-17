@@ -599,13 +599,29 @@ Give analogues of the `_⇔_` operation from
 Chapter [Isomorphism]({{ site.baseurl }}/Isomorphism/#iff),
 operation on booleans and decidables, and also show the corresponding erasure:
 ```
-postulate
-  _iff_ : Bool → Bool → Bool
-  _⇔-dec_ : ∀ {A B : Set} → Dec A → Dec B → Dec (A ⇔ B)
-  iff-⇔ : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ iff ⌊ y ⌋ ≡ ⌊ x ⇔-dec y ⌋
+_iff_ : Bool → Bool → Bool
+_iff_ true true =  true
+_iff_ false false = true
+_iff_ false true = false
+_iff_ true false = false
+
+_⇔-dec_ : ∀ {A B : Set} → Dec A → Dec B → Dec (A ⇔ B)
+yes p ⇔-dec yes p₁ = yes (record { to = λ _ → p₁ ; from = λ _ → p })
+yes p ⇔-dec no ¬p = no (λ z → ¬p (_⇔_.to z p))
+no ¬p ⇔-dec yes p = no (λ z → ¬p (_⇔_.from z p))
+no ¬p ⇔-dec no ¬p₁ = yes (record { to = λ x → ⊥-elim (¬p x) ; from = λ x → ⊥-elim (¬p₁ x) })
+
+-- postulate
+iff-⇔ : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ iff ⌊ y ⌋ ≡ ⌊ x ⇔-dec y ⌋
+iff-⇔ (yes p) (yes p₁) = refl
+iff-⇔ (yes p) (no ¬p) = refl
+iff-⇔ (no ¬p) (yes p) = refl
+iff-⇔ (no ¬p) (no ¬p₁) = refl
 ```
 
 ```
 -- Your code goes here
 ```
+
+sorry for all the meaningless variable names
 
