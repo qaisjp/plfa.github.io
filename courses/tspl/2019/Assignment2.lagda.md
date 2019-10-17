@@ -389,6 +389,8 @@ of two stable formulas is stable.
 
 ```
 -- Your code goes here
+¬¬-stable : ∀ {A : Set} → ¬ A → Stable (¬ A)
+¬¬-stable x x₁ = λ z → x₁ (λ z₁ → z₁ z)
 ```
 
 ## Quantifiers
