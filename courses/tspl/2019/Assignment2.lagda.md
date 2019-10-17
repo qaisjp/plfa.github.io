@@ -200,12 +200,28 @@ is isomorphic to `(A → B) × (B → A)`.
 ```
 
 
+A
+Y
+
+A ⊎ Y ≡ inj₁ A
+
 #### Exercise `⊎-comm` (recommended)
 
 Show sum is commutative up to isomorphism.
 
 ```
 -- Your code goes here
+
+⊎-comm : ∀ {A B : Set} → A ⊎ B ≃ B ⊎ A
+⊎-comm =
+  record
+  { to =  λ { (inj₁ x) →  inj₂ x ; (inj₂ y) →  inj₁ y }
+--  ; from = λ x →  case-⊎ inj₂ inj₁ x
+  ; from = λ { (inj₁ x) → inj₂ x ; (inj₂ y) → inj₁ y }
+  ; from∘to = λ { (inj₁ x) → refl ; (inj₂ y) → refl}
+  ; to∘from = λ { (inj₁ x) → refl ; (inj₂ y) → refl}
+  }
+
 ```
 
 #### Exercise `⊎-assoc` (practice)
