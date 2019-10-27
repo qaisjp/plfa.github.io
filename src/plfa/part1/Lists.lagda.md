@@ -577,29 +577,19 @@ map-compose : ∀ {A B C : Set}
               --------------
             → map (g ∘ f) ≡ map g ∘ map f
 
---open import Eq using (extensionality)
 open import plfa.part1.Isomorphism using (extensionality)
-
 
 map-compose f g = extensionality (helper f g)
   where
-    postulate
-      helper : ∀ {A B C : Set}
---        → (x : List A)
-        → (f : A -> B)
-        → (g : B -> C)
-        → (x : List A)
-          --------------
-        → map (g ∘ f) x ≡ (map g ∘ map f) x
-        
-```
-  begin
-    map (g ∘ f)
-  
-  ≡⟨ extensionality ⟩
-    map g ∘ map f
-  ∎
-```
+    helper : ∀ {A B C : Set}
+      → (f : A -> B)
+      → (g : B -> C)
+      → (xs : List A)
+        --------------
+      → map (g ∘ f) xs ≡ (map g ∘ map f) xs
+
+    helper f g [] = refl
+    helper f g (y ∷ ys) = cong (_∷_ (g (f y))) (helper f g ys)
 ```
 
 #### Exercise `map-++-distribute` (practice)
@@ -609,7 +599,14 @@ Prove the following relationship between map and append:
     map f (xs ++ ys) ≡ map f xs ++ map f ys
 
 ```
--- Your code goes here
+map-++-distribute : ∀ {A B : Set}
+  → (f : A -> B)
+  → (xs ys : List A)
+    ----------------
+  → map f (xs ++ ys) ≡ map f xs ++ map f ys
+
+map-++-distribute f [] ys = refl
+map-++-distribute f (x ∷ xs) ys  rewrite map-++-distribute f xs ys = refl
 ```
 
 #### Exercise `map-Tree` (practice)
