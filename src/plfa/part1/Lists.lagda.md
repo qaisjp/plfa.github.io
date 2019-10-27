@@ -711,7 +711,25 @@ For example:
     product [ 1 , 2 , 3 , 4 ] ≡ 24
 
 ```
--- Your code goes here
+product = foldr _*_ 1
+
+_ : product [ 1 , 2 , 3 , 4 ] ≡ 24
+_ =
+  begin
+    product [ 1 , 2 , 3 , 4 ]
+  ≡⟨⟩
+    foldr _*_ 1 [ 1 , 2 , 3 , 4 ]
+  ≡⟨⟩
+    1 * foldr _*_ 1 [ 2 , 3 , 4 ]
+  ≡⟨⟩
+    1 * 2 * foldr _*_ 1 [ 3 , 4 ]
+  ≡⟨⟩
+    1 * 2 * 3 * foldr _*_ 1 [ 4 ]
+  ≡⟨⟩
+    1 * 2 * 3 * 4 * foldr _*_ 1 []
+  ≡⟨⟩
+    1 * 2 * 3 * 4 * 1
+  ∎
 ```
 
 #### Exercise `foldr-++` (recommended)
