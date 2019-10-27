@@ -393,6 +393,14 @@ as the identity function.  Show that reverse is an involution:
     reverse (reverse xs) ≡ xs
 
 
+```
+reverse-involutive : ∀ {A : Set} (xs : List A) → reverse (reverse xs) ≡ xs
+reverse-involutive [] = refl
+reverse-involutive (x ∷ xs)
+  rewrite reverse-++-distrib (reverse xs) [ x ]
+        | reverse-involutive xs = refl
+```
+
 ## Faster reverse
 
 The definition above, while easy to reason about, is less efficient than
