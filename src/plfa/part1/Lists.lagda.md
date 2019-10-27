@@ -567,7 +567,39 @@ Prove that the map of a composition is equal to the composition of two maps:
 The last step of the proof requires extensionality.
 
 ```
--- Your code goes here
+
+-- Dear marker, is this correct? Is there a better way I could do this?
+-- When should we use this sort of formatting?
+-- Thanks in advance.
+map-compose : ∀ {A B C : Set}
+            → (f : A -> B)
+            → (g : B -> C)
+              --------------
+            → map (g ∘ f) ≡ map g ∘ map f
+
+--open import Eq using (extensionality)
+open import plfa.part1.Isomorphism using (extensionality)
+
+
+map-compose f g = extensionality (helper f g)
+  where
+    postulate
+      helper : ∀ {A B C : Set}
+--        → (x : List A)
+        → (f : A -> B)
+        → (g : B -> C)
+        → (x : List A)
+          --------------
+        → map (g ∘ f) x ≡ (map g ∘ map f) x
+        
+```
+  begin
+    map (g ∘ f)
+  
+  ≡⟨ extensionality ⟩
+    map g ∘ map f
+  ∎
+```
 ```
 
 #### Exercise `map-++-distribute` (practice)
