@@ -623,7 +623,13 @@ Define a suitable map operator over trees:
     map-Tree : ∀ {A B C D : Set} → (A → C) → (B → D) → Tree A B → Tree C D
 
 ```
--- Your code goes here
+map-Tree : ∀ {A B C D : Set} → (A → C) → (B → D) → Tree A B → Tree C D
+map-Tree A→C B→D (leaf a) = leaf (A→C a)
+map-Tree A→C B→D (node left x right) = (node l y r)
+  where
+    l = map-Tree A→C B→D left
+    r = map-Tree A→C B→D right
+    y = B→D x
 ```
 
 ## Fold {#Fold}
