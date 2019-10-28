@@ -814,7 +814,14 @@ Define a suitable fold function for the type of trees given earlier:
 
 
 ```
--- Your code goes here
+fold-Tree : ∀ {A B C : Set} → (A → C) → (C → B → C → C) → Tree A B → C
+fold-Tree {A} {B} {C} A→C f (leaf a) = A→C a
+fold-Tree {A} {B} {C} A→C f (node left b right) = f l b r
+  where
+    -- note: f is a function that takes (node left b right) and produces a C
+    l = fold-Tree A→C f left
+    r = fold-Tree A→C f right
+
 ```
 
 #### Exercise `map-is-fold-Tree` (practice)
