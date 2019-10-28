@@ -572,8 +572,8 @@ The last step of the proof requires extensionality.
 -- When should we use this sort of formatting?
 -- Thanks in advance.
 map-compose : ∀ {A B C : Set}
-            → (f : A -> B)
-            → (g : B -> C)
+            → (f : A → B)
+            → (g : B → C)
               --------------
             → map (g ∘ f) ≡ map g ∘ map f
 
@@ -582,8 +582,8 @@ open import plfa.part1.Isomorphism using (extensionality)
 map-compose f g = extensionality (helper f g)
   where
     helper : ∀ {A B C : Set}
-      → (f : A -> B)
-      → (g : B -> C)
+      → (f : A → B)
+      → (g : B → C)
       → (xs : List A)
         --------------
       → map (g ∘ f) xs ≡ (map g ∘ map f) xs
@@ -829,7 +829,27 @@ fold-Tree {A} {B} {C} A→C f (node left b right) = f l b r
 Demonstrate an analogue of `map-is-foldr` for the type of trees.
 
 ```
--- Your code goes here
+map-is-fold-Tree : ∀ {A B C D : Set}
+  → (ac : A → C)
+  → (bd : B → D)
+--  → (t : Tree A B)
+    --------
+  → map-Tree ac bd ≡ fold-Tree (λ { a → leaf (ac a) }) (λ { l b r → node l (bd b) r })
+  
+
+map-is-fold-Tree ac bd = extensionality (helper ac bd)
+  where
+      helper :  ∀ {A B C D : Set}
+        → (ac : A → C)
+        → (bd : B → D)
+        → (t : Tree A B)
+          --------
+        → map-Tree ac bd t ≡ fold-Tree (λ { a → leaf (ac a) }) (λ { l b r → node l (bd b) r }) t
+      helper ac bd (leaf a) = refl
+      helper ac bd (node left b right)
+        rewrite (helper ac bd left)
+              | (helper ac bd right) = refl
+    
 ```
 
 #### Exercise `sum-downFrom` (stretch)
