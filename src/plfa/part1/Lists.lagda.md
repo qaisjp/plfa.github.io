@@ -770,7 +770,15 @@ Show as a consequence of `foldr-++` above that
 
 
 ```
--- Your code goes here
+
+foldr-∷ : ∀ {A : Set} → (xs : List A) → foldr _∷_ [] xs ≡ xs
+foldr-∷ [] = refl
+foldr-∷ (x ∷ xs) =
+  begin
+    x ∷ foldr _∷_ [] xs
+  ≡⟨ cong (x ∷_) (foldr-∷ xs) ⟩
+    x ∷ xs
+  ∎
 ```
 
 #### Exercise `map-is-foldr` (practice)
