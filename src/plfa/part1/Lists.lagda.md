@@ -797,12 +797,13 @@ map-is-foldr : ∀ {A B : Set}
   → map f ≡ foldr (λ x xs → f x ∷ xs) []
 map-is-foldr f xs = extensionality (helper f)
   where
-    postulate
       helper : ∀ {A B : Set}
         → (f : A → B)
         → (ys : List A)
           ------------
         → map f ys ≡ foldr (λ y ys → f y ∷ ys) [] ys
+      helper f [] = refl
+      helper f (x ∷ ys) = cong ((f x) ∷_) (helper f ys)
 
 ```
 
