@@ -790,7 +790,20 @@ Show that map can be defined using fold:
 The proof requires extensionality.
 
 ```
--- Your code goes here
+map-is-foldr : ∀ {A B : Set}
+  → (f : A → B)
+  → (xs : List A)
+    ------------
+  → map f ≡ foldr (λ x xs → f x ∷ xs) []
+map-is-foldr f xs = extensionality (helper f)
+  where
+    postulate
+      helper : ∀ {A B : Set}
+        → (f : A → B)
+        → (ys : List A)
+          ------------
+        → map f ys ≡ foldr (λ y ys → f y ∷ ys) [] ys
+
 ```
 
 #### Exercise `fold-Tree` (practice)
