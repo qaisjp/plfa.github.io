@@ -874,7 +874,7 @@ equal to `n * (n ∸ 1) / 2`:
 ```
 
 open import Data.Nat.Properties using (*-comm; *-distribˡ-+; +-comm;
-                                       *-distribˡ-∸)
+                                       *-distribˡ-∸; *-zeroˡ)
 open import Data.Nat.Properties using (m∸n+n≡m; +-∸-comm; +-∸-assoc)
 
 sum-downFrom : ∀ (n : ℕ) → sum (downFrom n) * 2 ≡ n * (n ∸ 1)
@@ -927,9 +927,27 @@ sum-downFrom (suc n)  =
       where
         n≡n : ∀ (n : ℕ) → n ≡ n
         n≡n a = refl
-        postulate
-          n≤n*n : ∀ (n : ℕ) → n ≤ (n * n)
-        --n≤n*n n rewrite Data.Nat.Properties.*-mono-≤ (s≤s (n * n)) = {!!}
+
+        n≤n*n : ∀ (n : ℕ) → n ≤ (n * n)
+        n≤n*n zero = z≤n
+        n≤n*n (suc m) = s≤s ( h m (m * suc m) )
+          where
+            h : ∀ (m l : ℕ) → m ≤ m + l
+            h zero l =  z≤n
+            h (suc m) l  = s≤s (h m l)
+          -- where
+          --   s = Data.Nat.Properties.*-monoʳ-≤ 1 (Data.Nat.Properties.≤-reflexive (n≡n n) ) -- rewrite Data.Nat.Properties.*-mono-≤ (s≤s (n * n)) = ?
+          --   h : ∀ (n : ℕ) → n + 0 * n ≡ n
+          --   h n =
+          --     begin
+          --       n + 0 * n
+          --     ≡⟨⟩
+          --       n + (0 * n)
+          --     ≡⟨ cong (n +_) (*-zeroˡ n) ⟩
+          --       n + 0
+          --     ≡⟨ +-identityʳ n ⟩
+          --       n
+          --     ∎
           
 
 ```
