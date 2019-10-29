@@ -1039,6 +1039,9 @@ operations associate to the left rather than the right.  For example:
 
 ```
 -- Your code goes here
+foldl : {A B : Set} → (A → B → B) → B → List A → B
+foldl _⊗_ e [] = e
+foldl _⊗_ e (x ∷ xs) = x ⊗ (foldl _⊗_ e xs)
 ```
 
 
@@ -1048,11 +1051,19 @@ Show that if `_⊗_` and `e` form a monoid, then `foldr _⊗_ e` and
 `foldl _⊗_ e` always compute the same result.
 
 ```
--- Your code goes here
+foldr-monoid-foldl : ∀ {A : Set} (_⊗_ : A → A → A) (e : A) → IsMonoid _⊗_ e →
+  ∀ (xs : List A) → foldr _⊗_ e xs ≡ foldl _⊗_ e xs
+
+--  ^^^^^^^^^^^^^  is this type signature correct?
+
+foldr-monoid-foldl ox e mox [] = refl
+foldr-monoid-foldl ox e mox (x ∷ xs) rewrite foldr-monoid-foldl ox e mox xs = refl
+
 ```
 
 
 ## All {#All}
+
 
 We can also define predicates over lists. Two of the most important
 are `All` and `Any`.
