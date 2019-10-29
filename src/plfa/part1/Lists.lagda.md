@@ -1177,7 +1177,34 @@ replacement for `_×_`.  As a consequence, demonstrate an equivalence relating
 `_∈_` and `_++_`.
 
 ```
--- Your code goes here
+
+open import Data.Sum using (_⊎_; inj₁; inj₂)
+
+Any-++-⇔ : ∀ {A : Set} {P : A → Set} (xs ys : List A) →
+  Any P (xs ++ ys) ⇔ (Any P xs ⊎ Any P ys)
+
+Any-++-⇔ xs ys =
+  record
+    { to = to xs ys
+    ; from = from xs ys
+    }
+
+  where
+    to : ∀ {A : Set} {P : A → Set} (xs ys : List A) →
+      Any P (xs ++ ys) → (Any P xs ⊎ Any P ys)
+
+    to [] ys Pys = inj₂ Pys
+    to (x ∷ xs) ys (here Px) = inj₁ (here Px)
+    to (x ∷ xs) ys (there Prests) with to xs ys Prests
+    ... | inj₁ x₁ = inj₁ (there x₁)
+    ... | inj₂ y = inj₂ y
+
+    from : ∀ {A : Set} {P : A → Set} (xs ys : List A) →
+      Any P xs ⊎ Any P ys → Any P (xs ++ ys)
+    from [] ys (inj₂ y) = y
+    from (x ∷ xs) ys (inj₂ y) = there (from xs ys (inj₂ y))
+    from (x ∷ xs) ys (inj₁ (here x₁)) = here x₁
+    from (x ∷ xs) ys (inj₁ (there x′)) = there (from xs ys (inj₁ x′))
 ```
 
 #### Exercise `All-++-≃` (stretch)
