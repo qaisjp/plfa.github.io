@@ -872,26 +872,31 @@ equal to `n * (n ∸ 1) / 2`:
     sum (downFrom n) * 2 ≡ n * (n ∸ 1)
 
 ```
+
+open import Data.Nat.Properties using (*-comm; *-distribˡ-+; +-comm;
+                                       *-distribˡ-∸)
+open import Data.Nat.Properties using (m∸n+n≡m; +-∸-comm; +-∸-assoc)
+
 sum-downFrom : ∀ (n : ℕ) → sum (downFrom n) * 2 ≡ n * (n ∸ 1)
 sum-downFrom zero = refl
-sum-downFrom (suc n)  = 
-     begin
+sum-downFrom (suc n)  =
+      begin
         (n + foldr _+_ 0 (downFrom n)) * 2
-      ≡⟨ Data.Nat.Properties.*-comm (n + foldr _+_ 0 (downFrom n)) 2 ⟩
+      ≡⟨ *-comm (n + foldr _+_ 0 (downFrom n)) 2 ⟩
         2 * (n + foldr _+_ 0 (downFrom n))
-      ≡⟨ Data.Nat.Properties.*-distribˡ-+ 2 n (foldr _+_ 0 (downFrom n)) ⟩
+      ≡⟨ *-distribˡ-+ 2 n (foldr _+_ 0 (downFrom n)) ⟩
         (2 * n) + (2 * (foldr _+_ 0 (downFrom n)))
-      ≡⟨ Data.Nat.Properties.+-comm (2 * n) (2 * (foldr _+_ 0 (downFrom n))) ⟩
+      ≡⟨ +-comm (2 * n) (2 * (foldr _+_ 0 (downFrom n))) ⟩
         (2 * (foldr _+_ 0 (downFrom n))) + (2 * n)
       ≡⟨⟩
         (2 * sum (downFrom n)) + (2 * n)
-      ≡⟨ cong (_+ (2 * n)) (Data.Nat.Properties.*-comm 2 (sum (downFrom n))) ⟩
+      ≡⟨ cong (_+ (2 * n)) (*-comm 2 (sum (downFrom n))) ⟩
         (sum (downFrom n) * 2) + (2 * n)
       ≡⟨ cong (_+ (2 * n)) (sum-downFrom n) ⟩
         n * (n ∸ 1) + (2 * n)
       ≡⟨⟩
         (n * (n ∸ 1)) + (2 * n)
-      ≡⟨ cong (_+ (2 * n)) (Data.Nat.Properties.*-distribˡ-∸ n n 1) ⟩
+      ≡⟨ cong (_+ (2 * n)) (*-distribˡ-∸ n n 1) ⟩
         ((n * n) ∸ (n * 1)) + (2 * n)
       ≡⟨⟩
         ((n * n) ∸ (n * 1)) + (n + (1 * n))
@@ -900,11 +905,32 @@ sum-downFrom (suc n)  =
         (((n * n) ∸ (n * 1)) + (n + n))
       ≡⟨ cong ( λ x → ((n * n) ∸ (x)) + (n + n)) (*-identityʳ n)  ⟩
         ((n * n) ∸ n) + (n + n)
-      ≡⟨ Data.Nat.Properties.+-assoc (n * n) n (n + n) ⟩
-        ((n * n) ∸ n + n) + n
+      ≡⟨ sym (+-assoc ((n * n) ∸ n) n n) ⟩
+        ((n * n ∸ n) + n) + n
+      ≡⟨⟩
+        (((n * n) ∸ n) + n) + n
+      ≡⟨ cong (_+ n) (sym (+-∸-comm n (n≤n*n n))) ⟩
+        
+      -- ≡⟨ cong ( λ x → x + n ) (m∸n+n≡m (n≤n*n n)) ⟩
+        ( ((n * n) + n) ∸ n ) + n
+      ≡⟨ cong (_+ n) ( +-∸-assoc (n * n) (Data.Nat.Properties.≤-reflexive (n≡n n) ) ) ⟩
+        ( (n * n) + (n ∸ n) ) + n
+      ≡⟨ cong ( λ x → ((n * n) + x) + n ) (Data.Nat.Properties.n∸n≡0 n) ⟩
+         (n * n) + 0 + n
+      ≡⟨ cong (_+ n) (+-identityʳ (n * n)) ⟩
+         (n * n) + n
+      ≡⟨ +-comm (n * n) n ⟩
+        n + (n * n)
       ≡⟨⟩
         n + n * n
       ∎
+      where
+        n≡n : ∀ (n : ℕ) → n ≡ n
+        n≡n a = refl
+        postulate
+          n≤n*n : ∀ (n : ℕ) → n ≤ (n * n)
+        --n≤n*n n rewrite Data.Nat.Properties.*-mono-≤ (s≤s (n * n)) = {!!}
+          
 
 ```
 
