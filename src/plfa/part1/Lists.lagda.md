@@ -871,6 +871,42 @@ equal to `n * (n ∸ 1) / 2`:
 
     sum (downFrom n) * 2 ≡ n * (n ∸ 1)
 
+```
+sum-downFrom : ∀ (n : ℕ) → sum (downFrom n) * 2 ≡ n * (n ∸ 1)
+sum-downFrom zero = refl
+sum-downFrom (suc n)  = 
+     begin
+        (n + foldr _+_ 0 (downFrom n)) * 2
+      ≡⟨ Data.Nat.Properties.*-comm (n + foldr _+_ 0 (downFrom n)) 2 ⟩
+        2 * (n + foldr _+_ 0 (downFrom n))
+      ≡⟨ Data.Nat.Properties.*-distribˡ-+ 2 n (foldr _+_ 0 (downFrom n)) ⟩
+        (2 * n) + (2 * (foldr _+_ 0 (downFrom n)))
+      ≡⟨ Data.Nat.Properties.+-comm (2 * n) (2 * (foldr _+_ 0 (downFrom n))) ⟩
+        (2 * (foldr _+_ 0 (downFrom n))) + (2 * n)
+      ≡⟨⟩
+        (2 * sum (downFrom n)) + (2 * n)
+      ≡⟨ cong (_+ (2 * n)) (Data.Nat.Properties.*-comm 2 (sum (downFrom n))) ⟩
+        (sum (downFrom n) * 2) + (2 * n)
+      ≡⟨ cong (_+ (2 * n)) (sum-downFrom n) ⟩
+        n * (n ∸ 1) + (2 * n)
+      ≡⟨⟩
+        (n * (n ∸ 1)) + (2 * n)
+      ≡⟨ cong (_+ (2 * n)) (Data.Nat.Properties.*-distribˡ-∸ n n 1) ⟩
+        ((n * n) ∸ (n * 1)) + (2 * n)
+      ≡⟨⟩
+        ((n * n) ∸ (n * 1)) + (n + (1 * n))
+      -- ≡⟨ Data.Nat.Properties.+-assoc ((n * n) ∸ (n * 1)) n (1 * n) ⟩
+      ≡⟨ cong ( λ x → ((n * n) ∸ (n * 1)) + (n + x)) (*-identityˡ n)  ⟩
+        (((n * n) ∸ (n * 1)) + (n + n))
+      ≡⟨ cong ( λ x → ((n * n) ∸ (x)) + (n + n)) (*-identityʳ n)  ⟩
+        ((n * n) ∸ n) + (n + n)
+      ≡⟨ Data.Nat.Properties.+-assoc (n * n) n (n + n) ⟩
+        ((n * n) ∸ n + n) + n
+      ≡⟨⟩
+        n + n * n
+      ∎
+
+```
 
 ## Monoids
 
