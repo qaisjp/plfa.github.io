@@ -529,16 +529,69 @@ Show that `Any` and `All` satisfy a version of De Morgan's Law:
 to arbitrary levels, as described in the section on
 [universe polymorphism]({{ site.baseurl }}/Equality/#unipoly)?)
 
+
+```
+¬Any⇔All¬ : ∀ {A : Set} {P : A → Set} → (xs : List A) →
+  (¬_ ∘ Any P) xs ⇔ All (¬_ ∘ P) xs
+
+
+¬Any→All¬ : ∀ {A : Set} {P : A → Set} → (xs : List A) →
+  (¬_ ∘ Any P) xs → All (¬_ ∘ P) xs
+
+¬Any→All¬ [] p = []
+¬Any→All¬ (x ∷ xs) p = (λ x → p (here x)) ∷ ¬Any→All¬ xs (λ z → p (there z))
+
+All¬→¬Any : ∀ {A : Set} {P : A → Set} → (xs : List A) →
+  All (¬_ ∘ P) xs → (¬_ ∘ Any P) xs
+
+All¬→¬Any [] p = λ ()
+All¬→¬Any (x ∷ xs) (x₁ ∷ p) (here x₂) = x₁ x₂
+All¬→¬Any (x ∷ xs) (x₁ ∷ p) (there x₂) = All¬→¬Any xs p x₂
+
+¬Any⇔All¬ xs = record
+  { to = ¬Any→All¬ xs
+  ; from = All¬→¬Any xs
+  }
+
+
+```
+
 Do we also have the following?
 
     (¬_ ∘ All P) xs ⇔ Any (¬_ ∘ P) xs
 
 If so, prove; if not, explain why.
 
+Not provable! Because:
 
-```
--- Your code goes here
-```
+Any¬→¬All is provable, because Any is defined where there is at least
+  one x in xs (and so is Any)
+
+
+¬All→Any¬ is not, because whilst All is defined for 0 or more x in xs,
+  Any is only defined where there is atleast one x in xs
+
+
+  ¬All⇔Any¬ : ∀ {A : Set} {P : A → Set} → (xs : List A) →
+    (¬_ ∘ All P) xs ⇔ Any (¬_ ∘ P) xs
+
+  ¬All→Any¬ : ∀ {A : Set} {P : A → Set} → (xs : List A) →
+    (¬_ ∘ All P) xs → Any (¬_ ∘ P) xs
+
+  ¬All→Any¬ [] ps = ? -- cannot prove!!!!!
+  ¬All→Any¬ (x ∷ xs) x₁ = ? -- cannot prove!!!!!
+
+  Any¬→¬All : ∀ {A : Set} {P : A → Set} → (xs : List A) →
+    Any (¬_ ∘ P) xs → (¬_ ∘ All P) xs
+
+  Any¬→¬All .(_ ∷ _) (here x) (p ∷ ps) = x p
+  Any¬→¬All .(_ ∷ xs) (there {xs = xs} ps) (x ∷ y) = Any¬→¬All xs ps y
+
+  ¬All⇔Any¬ xs = record
+    { to =  ¬All→Any¬ xs
+    ; from = Any¬→¬All xs
+    }
+
 
 
 #### Exercise `¬Any≃All¬` (stretch)
