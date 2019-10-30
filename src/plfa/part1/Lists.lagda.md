@@ -1223,6 +1223,13 @@ Any-++-⇔ xs ys =
     from (x ∷ xs) ys (inj₂ y) = there (from xs ys (inj₂ y))
     from (x ∷ xs) ys (inj₁ (here x₁)) = here x₁
     from (x ∷ xs) ys (inj₁ (there x′)) = there (from xs ys (inj₁ x′))
+
+-- As a consequence, demonstrate an equivalence relating `_∈_` and `_++_`
+-- (uhhh this is not an equivalence!!!)
+∈-++ : ∀ {A : Set} {e : A} (xs ys : List A) → (e ∈ xs) → (e ∈ (xs ++ ys))
+∈-++ (x ∷ xs) ys (here x₁) = here x₁
+∈-++ (x ∷ xs) ys (there x∈xs) = there (∈-++ xs ys x∈xs)
+
 ```
 
 #### Exercise `All-++-≃` (stretch)
