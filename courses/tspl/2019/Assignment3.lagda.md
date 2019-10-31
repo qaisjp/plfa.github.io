@@ -59,7 +59,7 @@ open import plfa.part1.Isomorphism using (_≃_; ≃-sym; ≃-trans; _≲_; exte
 open plfa.part1.Isomorphism.≃-Reasoning
 open import plfa.part1.Lists using (List; []; _∷_; [_]; [_,_]; [_,_,_]; [_,_,_,_];
   _++_; reverse; map; foldr; sum; All; Any; here; there; _∈_)
-open import plfa.part2.Lambda hiding (ƛ′_⇒_; case′_[zero⇒_|suc_⇒_]; μ′_⇒_; plus′; mul)
+open import plfa.part2.Lambda hiding (ƛ′_⇒_; case′_[zero⇒_|suc_⇒_]; μ′_⇒_; plus′)
   renaming (begin_ to lbegin_; _∎ to _l∎)
 open import plfa.part2.Properties hiding (value?; unstuck; preserves; wttdgs)
 

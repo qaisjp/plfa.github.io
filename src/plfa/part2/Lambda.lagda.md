@@ -193,8 +193,8 @@ two natural numbers.  Your definition may use `plus` as
 defined earlier.
 
 ```
-mul : Term
-mul = μ "*" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
+mul' : Term
+mul' = μ "*" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
   case ` "m"
     [zero⇒ ` "n"
     |suc "m" ⇒ plus · ` "n" · (` "*" · ` "m" · ` "n") ]
