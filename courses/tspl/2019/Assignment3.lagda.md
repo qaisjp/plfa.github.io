@@ -592,8 +592,6 @@ Any¬→¬All is provable, because Any is defined where there is at least
     ; from = Any¬→¬All xs
     }
 
-
-
 #### Exercise `¬Any≃All¬` (stretch)
 
 Show that the equivalence `¬Any⇔All¬` can be extended to an isomorphism.
@@ -778,7 +776,17 @@ Using the term `mul` you defined earlier, write out the derivation
 showing that it is well typed.
 
 ```
--- Your code goes here
+mul-type : ∀ {Γ} → Γ ⊢ mul ⦂ `ℕ ⇒ `ℕ ⇒ `ℕ
+mul-type = ⊢μ (⊢ƛ (⊢ƛ (⊢case (⊢` ∋m) (⊢` ∋n)
+              (⊢plus · ⊢` ∋n′ · ((⊢` ∋* · ⊢` ∋m′ · ⊢` ∋n′))))))
+  where
+  ∋m  = (S (λ()) Z)
+  ∋n  = Z
+  ∋m′ = Z
+  ∋n′ = (S (λ()) Z)
+  ∋*  = (S (λ()) (S (λ()) (S (λ()) Z)))
+
+⊢mul = mul-type
 ```
 
 
@@ -839,7 +847,10 @@ preserves types.
 Using the evaluator, confirm that two times two is four.
 
 ```
--- Your code goes here
+⊢2*2 : ∅ ⊢ mul · two · two ⦂ `ℕ
+⊢2*2 = ⊢mul · ⊢two · ⊢two
+
+-- _ : eval (gas 100) ⊢2*2 ≡
 ```
 
 
