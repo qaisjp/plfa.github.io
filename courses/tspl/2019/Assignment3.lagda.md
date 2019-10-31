@@ -1824,5 +1824,29 @@ Give an example of an ill-typed term that does get stuck.
 Provide proofs of the three postulates, `unstuck`, `preserves`, and `wttdgs` above.
 
 ```
--- Your code goes here
+unstuck : ∀ {M A}
+  → ∅ ⊢ M ⦂ A
+    ---------
+  → ¬ (Stuck M)
+
+unstuck f ⟨ fst , snd ⟩ with progress f
+... | step a = fst a
+... | done b = snd b
+
+
+preserves : ∀ {M N A}
+  → ∅ ⊢ M ⦂ A
+  → M —↠ N
+    ---------
+  → ∅ ⊢ N ⦂ A
+preserves a (M l∎) = a
+preserves a (L —→⟨ x ⟩ b) = preserves (preserve a x) b
+
+wttdgs : ∀ {M N A}
+  → ∅ ⊢ M ⦂ A
+  → M —↠ N
+    --------
+  → ¬ (Stuck N)
+wttdgs a b = unstuck (preserves a b)
+
 ```
