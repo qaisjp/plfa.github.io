@@ -196,7 +196,7 @@ defined earlier.
 mul' : Term
 mul' = μ "*" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
   case ` "m"
-    [zero⇒ ` "n"
+    [zero⇒ `zero
     |suc "m" ⇒ plus · ` "n" · (` "*" · ` "m" · ` "n") ]
 ```
 
@@ -209,7 +209,13 @@ definition may use `plusᶜ` as defined earlier (or may not
 — there are nice definitions both ways).
 
 ```
--- Your code goes here
+mulᶜ : Term
+mulᶜ = ƛ "m" ⇒ ƛ "n" ⇒ ƛ "s" ⇒ ƛ "z" ⇒
+  ` "n" · (plusᶜ · ` "m" · ` "z" · ` "s") · ` "z"
+
+
+-- _ : mulᶜ · twoᶜ · twoᶜ · sucᶜ · `zero ≡ `suc `suc `suc `suc `zero
+
 ```
 
 
