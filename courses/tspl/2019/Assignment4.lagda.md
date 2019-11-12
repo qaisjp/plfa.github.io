@@ -8,7 +8,7 @@ permalink : /TSPL/2019/Assignment4/
 module Assignment4 where
 ```
 
-## YOUR NAME AND EMAIL GOES HERE
+## s1620208 Qais Patankar
 
 
 ## Introduction
@@ -81,6 +81,23 @@ Write out the definition of a lambda term that multiplies
 two natural numbers, now adapted to the inherently typed
 DeBruijn representation.
 
+```
+  mul : ∀ {Γ} → Γ ⊢ `ℕ ⇒ `ℕ ⇒ `ℕ
+  mul = μ ƛ ƛ case (# 1) (`zero) (plus · (# 1) · ( (# 3) · (# 0) · (# 1) ))
+
+  _ : mul · two · two ≡ (μ
+                           (ƛ
+                            (ƛ
+                             case (` (S Z)) `zero
+                             ((μ
+                               (ƛ
+                                (ƛ case (` (S Z)) (` Z) (`suc (` (S (S (S Z))) · ` Z · ` (S Z))))))
+                              · ` (S Z)
+                              · (` (S (S (S Z))) · ` Z · ` (S Z))))))
+                          · `suc (`suc `zero)
+                          · `suc (`suc `zero)
+  _ = refl
+```
 
 #### Exercise `V¬—→`
 
