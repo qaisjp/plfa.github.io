@@ -280,6 +280,12 @@ Remember to indent all code by two spaces.
       → Γ , B ⊢ C
         ----------
       → Γ ⊢ C
+
+    -- empty type
+    case⊥ : ∀ {Γ A}
+      → Γ ⊢ `⊥
+        ------
+      → Γ ⊢ A
     -- end
 ```
 
@@ -328,6 +334,8 @@ Remember to indent all code by two spaces.
   rename ρ (`inj₁ x) = `inj₁ (rename ρ x)
   rename ρ (`inj₂ x) = `inj₂ (rename ρ x)
   rename ρ (case⊎ L M N) = case⊎ ((rename ρ L)) (rename (ext ρ) M) (rename (ext ρ) N)
+
+  rename ρ (case⊥ L) = case⊥ (rename ρ L)
   -- end
 ```
 
@@ -358,6 +366,8 @@ Remember to indent all code by two spaces.
   subst σ (`inj₁ L) = `inj₁ (subst σ L)
   subst σ (`inj₂ L) = `inj₂ (subst σ L)
   subst σ (case⊎ L M N) = case⊎ (subst σ L) (subst (exts σ) M) (subst (exts σ) N)
+
+  subst σ (case⊥ L) = case⊥ (subst σ L)
   -- end
 ```
 
@@ -596,6 +606,13 @@ not fixed by the given arguments.
       → Value W
         -------
       → case⊎ (`inj₂ W) M N —→ N [ W ]
+
+    -- empty type
+    ξ-case⊥ : ∀ {Γ A} {L L′ : Γ ⊢ `⊥}
+      → L —→ L′
+        -------
+      → case⊥ {Γ} {A} L —→ case⊥ L′
+
     -- end
 ```
 
@@ -713,6 +730,9 @@ not fixed by the given arguments.
   ... | step x = step (ξ-case⊎ x)
   progress (case⊎ .(`inj₁ _) L₁ L₂) | done (V-inj₁ x) = step (β-inj₁ x)
   progress (case⊎ .(`inj₂ _) L₁ L₂) | done (V-inj₂ x) = step (β-inj₂ x)
+
+  progress (case⊥ b) with progress b
+  ... | step x = step (ξ-case⊥ x)
 ```
 
 
