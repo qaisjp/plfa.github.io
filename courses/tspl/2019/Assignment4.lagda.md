@@ -426,12 +426,12 @@ Remember to indent all code by two spaces.
       → Value ⟨ V , W ⟩
 
     -- begin
-    V-inj₁ : ∀ {Γ A B} {V : Γ ⊢ A} {W : Γ ⊢ B}
+    V-inj₁ : ∀ {Γ A B} {V : Γ ⊢ A}
       → Value V
         -----
       → Value {Γ} {A `⊎ B} (`inj₁ V)
 
-    V-inj₂ : ∀ {Γ A B} {V : Γ ⊢ A} {W : Γ ⊢ B}
+    V-inj₂ : ∀ {Γ A B} {W : Γ ⊢ B}
       → Value W
         -------
       → Value {Γ} {A `⊎ B} (`inj₂ W)
@@ -703,9 +703,16 @@ not fixed by the given arguments.
   progress (case× L M) with progress L
   ...    | step L—→L′                         =  step (ξ-case× L—→L′)
   ...    | done (V-⟨ VM , VN ⟩)               =  step (β-case× VM VN)
-  -- progress (`inj₁ L) = {!!}
-  -- progress (`inj₂ L) = {!!}
-  -- progress (case⊎ L L₁ L₂) = {!!}
+  progress (`inj₁ L) with progress L
+  ... | step x = step (ξ-inj₁ x)
+  ... | done x = done (V-inj₁ x)
+  progress (`inj₂ L) with progress L
+  ... | step x = step (ξ-inj₂ x)
+  ... | done x = done (V-inj₂ x)
+  progress (case⊎ L L₁ L₂) with progress L
+  ... | step x = step (ξ-case⊎ x)
+  progress (case⊎ .(`inj₁ _) L₁ L₂) | done (V-inj₁ x) = step (β-inj₁ x)
+  progress (case⊎ .(`inj₂ _) L₁ L₂) | done (V-inj₂ x) = step (β-inj₂ x)
 ```
 
 
