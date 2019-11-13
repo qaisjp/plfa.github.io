@@ -1214,8 +1214,16 @@ Remember to indent all code by two spaces.
 Rewrite your definition of multiplication from
 Chapter [Lambda][plfa.Lambda], decorated to support inference.
 
+```
+  bidirectional-mul : Term⁺
+  bidirectional-mul = (μ "*" ⇒ ƛ "m" ⇒ ƛ "n" ⇒
+    case (` "m" )
+      [zero⇒ zero
+      |suc "m" ⇒ (plus · (` "n" ↑) · ((` "*" · (` "m" ↑) · (` "n" ↑)) ↑)) ↑ ])
+      ↓ (`ℕ ⇒ `ℕ ⇒ `ℕ)
+```
 
-#### Exercise `bidirectional-products` (recommended) {#bidirectional-products}
+#### exercise `bidirectional-products` (recommended) {#bidirectional-products}
 
 Extend the bidirectional type rules to include products from
 Chapter [More][plfa.More].
