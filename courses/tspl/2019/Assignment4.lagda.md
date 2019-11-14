@@ -1355,6 +1355,16 @@ Chapter [Lambda][plfa.Lambda] decorated to support inference, and show
 that erasure of the inferred typing yields your definition of
 multiplication from Chapter [DeBruijn][plfa.DeBruijn].
 
+```
+  2*2 : Term⁺
+  2*2 = bidirectional-mul · two · two
+
+  -- ⊢2*2 : ∅ ⊢ 2*2 ↑ `ℕ
+  -- ⊢2*2 = ?
+
+  --_ : ∥ bidirectional-mul ∥⁻ ≡ DeBruijn.mul
+  -- _ = refl
+```
 
 #### Exercise `inference-products` (recommended)
 
@@ -1368,7 +1378,10 @@ Extend bidirectional inference to include the rest of the constructs from
 Chapter [More][plfa.More].
 
 ## Untyped
-
+```
+module Untyped where
+  open import plfa.part2.Untyped
+```
 #### Exercise (`Type≃⊤`)
 
 Show that `Type` is isomorphic to `⊤`, the unit type.
@@ -1401,6 +1414,11 @@ Use the encodings above to translate your definition of
 multiplication from previous chapters with the Scott
 representation and the encoding of the fixpoint operator.
 Confirm that two times two is four.
+
+```
+  mul-untyped : ∀ {Γ} → Γ ⊢  ★
+  mul-untyped = μ ƛ ƛ case (# 1) (`zero) (plus · (# 1) · ( (# 3) · (# 0) · (# 1) ))
+```
 
 #### Exercise `encode-more` (stretch)
 
