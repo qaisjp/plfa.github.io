@@ -913,6 +913,10 @@ Remember to indent all code by two spaces.
   infix   6  _↓_
   infixl  7  _·_
   infix   9  `_
+
+  -- begin
+  infixr 9 _`×_
+  -- end
 ```
 
 ### Identifiers, types, and contexts
@@ -924,6 +928,9 @@ Remember to indent all code by two spaces.
   data Type : Set where
     `ℕ    : Type
     _⇒_   : Type → Type → Type
+    -- begin
+    _`×_  : Type → Type → Type
+    -- end
 
   data Context : Set where
     ∅     : Context
@@ -941,6 +948,11 @@ Remember to indent all code by two spaces.
     _·_                       : Term⁺ → Term⁻ → Term⁺
     _↓_                       : Term⁻ → Type → Term⁺
 
+    -- begin
+    `proj₁_                  : Term⁺ → Term⁺
+    `proj₂_                  : Term⁺ → Term⁺
+    -- end
+
   data Term⁻ where
     ƛ_⇒_                     : Id → Term⁻ → Term⁻
     zero                     : Term⁻
@@ -948,6 +960,10 @@ Remember to indent all code by two spaces.
     case_[zero⇒_|suc_⇒_]     : Term⁺ → Term⁻ → Id → Term⁻ → Term⁻
     μ_⇒_                     : Id → Term⁻ → Term⁻
     _↑                       : Term⁺ → Term⁻
+
+    -- begin
+    `⟨_,_⟩                   : Term⁻ → Term⁻ → Term⁻
+    -- end
 ```
 
 ### Sample terms
@@ -1003,6 +1019,17 @@ Remember to indent all code by two spaces.
         ---------------
       → Γ ⊢ (M ↓ A) ↑ A
 
+    -- begin
+    ⊢proj₁ : ∀ {Γ L A B}
+      → Γ ⊢ L ↑ A `× B
+        ---------
+      → Γ ⊢ `proj₁ L ↑ A
+
+    ⊢proj₂ : ∀ {Γ L A B}
+      → Γ ⊢ L ↑ A `× B
+        ---------
+      → Γ ⊢ `proj₂ L ↑ B
+    -- end
   data _⊢_↓_ where
 
     ⊢ƛ : ∀ {Γ x N A B}
@@ -1036,6 +1063,14 @@ Remember to indent all code by two spaces.
       → A ≡ B
         -------------
       → Γ ⊢ (M ↑) ↓ B
+
+    -- begin
+    ⊢⟨_,_⟩ : ∀ {Γ M N A B}
+      → Γ ⊢ M ↓ A
+      → Γ ⊢ N ↓ B
+        ---------
+      → Γ ⊢ `⟨ M , N ⟩ ↓ (A `× B)
+    -- end
 ```
 
 
@@ -1051,6 +1086,19 @@ Remember to indent all code by two spaces.
   ...  | no A≢    | _         =  no λ{refl → A≢ refl}
   ...  | yes _    | no B≢     =  no λ{refl → B≢ refl}
   ...  | yes refl | yes refl  =  yes refl
+  `ℕ ≟Tp (B `× B₁) = no (λ ())
+
+  -- begin
+  (A ⇒ B) ≟Tp (A` `× B`) = no (λ ())
+  (A `× A₁) ≟Tp `ℕ = no (λ ())
+  (A `× A₁) ≟Tp (B ⇒ B₁) = no (λ ())
+  (A `× B) ≟Tp (A′ `× B′)
+    with A ≟Tp A′ | B ≟Tp B′
+  ... | yes p | yes p₁ rewrite p | p₁ = yes refl
+  ... | yes p | no ¬p = no λ{ refl → ¬p refl}
+  ... | no ¬p | yes p = no λ{ refl → ¬p refl}
+  ... | no ¬p | no ¬p₁ = no λ{ refl → ¬p₁ refl}
+  -- end
 ```
 
 ### Prerequisites
@@ -1062,8 +1110,24 @@ Remember to indent all code by two spaces.
   rng≡ : ∀ {A A′ B B′} → A ⇒ B ≡ A′ ⇒ B′ → B ≡ B′
   rng≡ refl = refl
 
+  -- begin
+  dom-product≡ : ∀ {A A′ B B′} → A `× B ≡ A′ `× B′ → B ≡ B′
+  dom-product≡ refl = refl
+
+  rng-product≡ : ∀ {A A′ B B′} → A `× B ≡ A′ `× B′ → A ≡ A′
+  rng-product≡ refl = refl
+  -- end
+
   ℕ≢⇒ : ∀ {A B} → `ℕ ≢ A ⇒ B
   ℕ≢⇒ ()
+
+  -- begin
+  ℕ≢`× : ∀ {A B} → `ℕ ≢ A `× B
+  ℕ≢`× ()
+
+  `×≢⇒ : ∀ {A B C D} →   A `× B  ≢   C ⇒ D
+  `×≢⇒ ()
+  -- end
 ```
 
 
@@ -1084,6 +1148,10 @@ Remember to indent all code by two spaces.
   uniq-↑ (⊢` ∋x) (⊢` ∋x′)       =  uniq-∋ ∋x ∋x′
   uniq-↑ (⊢L · ⊢M) (⊢L′ · ⊢M′)  =  rng≡ (uniq-↑ ⊢L ⊢L′)
   uniq-↑ (⊢↓ ⊢M) (⊢↓ ⊢M′)       =  refl
+  -- begin
+  uniq-↑ (⊢proj₁ L) (⊢proj₁ M) = rng-product≡ (uniq-↑ L M)
+  uniq-↑ (⊢proj₂ L) (⊢proj₂ M) = dom-product≡ (uniq-↑ L M)
+  -- end
 ```
 
 ## Lookup type of a variable in the context
@@ -1144,17 +1212,35 @@ Remember to indent all code by two spaces.
   synthesize Γ (L · M) with synthesize Γ L
   ... | no  ¬∃              =  no  (λ{ ⟨ _ , ⊢L  · _  ⟩  →  ¬∃ ⟨ _ , ⊢L ⟩ })
   ... | yes ⟨ `ℕ ,    ⊢L ⟩  =  no  (λ{ ⟨ _ , ⊢L′ · _  ⟩  →  ℕ≢⇒ (uniq-↑ ⊢L ⊢L′) })
+  -- begin
+  ... | yes ⟨ A `× B , ⊢L ⟩ = no λ { ⟨ A , ⊢L′ · ⊢M ⟩ →  `×≢⇒ (uniq-↑ ⊢L ⊢L′)}
+  -- end
   ... | yes ⟨ A ⇒ B , ⊢L ⟩ with inherit Γ M A
   ...    | no  ¬⊢M          =  no  (¬arg ⊢L ¬⊢M)
   ...    | yes ⊢M           =  yes ⟨ B , ⊢L · ⊢M ⟩
+
   synthesize Γ (M ↓ A) with inherit Γ M A
   ... | no  ¬⊢M             =  no  (λ{ ⟨ _ , ⊢↓ ⊢M ⟩  →  ¬⊢M ⊢M })
   ... | yes ⊢M              =  yes ⟨ A , ⊢↓ ⊢M ⟩
+
+  -- begin
+  synthesize Γ (`proj₁ M) with synthesize Γ M
+  ... | no ¬∃ = no λ { ⟨ A , ⊢proj₁ {B = B} ⊢M ⟩ → ¬∃ ⟨ A `× B , ⊢M ⟩ }
+  ... | yes ⟨ `ℕ , ⊢L ⟩ = no λ { ⟨ A , ⊢proj₁ ⊢L′ ⟩ → ℕ≢`× (uniq-↑ ⊢L ⊢L′)}
+  ... | yes ⟨ A ⇒ B , ⊢L ⟩ = no λ { ⟨ C , ⊢proj₁   ⊢L′ ⟩ →  `×≢⇒ (uniq-↑ ⊢L′ ⊢L)  }
+  ... | yes ⟨ A `× B , ⊢L ⟩ = yes ⟨ A , ⊢proj₁ ⊢L ⟩
+  synthesize Γ (`proj₂ M) with synthesize Γ M
+  ... | no ¬∃ = no λ { ⟨ B , ⊢proj₂ {A = A} ⊢L′ ⟩ → ¬∃ ⟨ A `× B , ⊢L′ ⟩  }
+  ... | yes ⟨ `ℕ , ⊢L ⟩ = no λ { ⟨ A , ⊢proj₂ ⊢L′ ⟩ → ℕ≢`× (uniq-↑ ⊢L ⊢L′)}
+  ... | yes ⟨ A ⇒ B , ⊢L ⟩ = no λ { ⟨ C , ⊢proj₂   ⊢L′ ⟩ →  `×≢⇒ (uniq-↑ ⊢L′ ⊢L)  }
+  ... | yes ⟨ A `× B , ⊢L ⟩ = yes ⟨ B , ⊢proj₂ ⊢L ⟩
+  -- end
 
   inherit Γ (ƛ x ⇒ N) `ℕ      =  no  (λ())
   inherit Γ (ƛ x ⇒ N) (A ⇒ B) with inherit (Γ , x ⦂ A) N B
   ... | no ¬⊢N                =  no  (λ{ (⊢ƛ ⊢N)  →  ¬⊢N ⊢N })
   ... | yes ⊢N                =  yes (⊢ƛ ⊢N)
+
   inherit Γ zero `ℕ           =  yes ⊢zero
   inherit Γ zero (A ⇒ B)      =  no  (λ())
   inherit Γ (suc M) `ℕ with inherit Γ M `ℕ
@@ -1164,11 +1250,15 @@ Remember to indent all code by two spaces.
   inherit Γ (case L [zero⇒ M |suc x ⇒ N ]) A with synthesize Γ L
   ... | no ¬∃                 =  no  (λ{ (⊢case ⊢L  _ _) → ¬∃ ⟨ `ℕ , ⊢L ⟩})
   ... | yes ⟨ _ ⇒ _ , ⊢L ⟩    =  no  (λ{ (⊢case ⊢L′ _ _) → ℕ≢⇒ (uniq-↑ ⊢L′ ⊢L) })
+  -- begin
+  ... | yes ⟨ P `× Q , ⊢L ⟩ = no λ { (⊢case x ⊢M ⊢NOOB) → ℕ≢`× (uniq-↑ x ⊢L)}
+  -- end
   ... | yes ⟨ `ℕ ,    ⊢L ⟩ with inherit Γ M A
   ...    | no ¬⊢M             =  no  (λ{ (⊢case _ ⊢M _) → ¬⊢M ⊢M })
   ...    | yes ⊢M with inherit (Γ , x ⦂ `ℕ) N A
   ...       | no ¬⊢N          =  no  (λ{ (⊢case _ _ ⊢N) → ¬⊢N ⊢N })
   ...       | yes ⊢N          =  yes (⊢case ⊢L ⊢M ⊢N)
+
   inherit Γ (μ x ⇒ N) A with inherit (Γ , x ⦂ A) N A
   ... | no ¬⊢N                =  no  (λ{ (⊢μ ⊢N) → ¬⊢N ⊢N })
   ... | yes ⊢N                =  yes (⊢μ ⊢N)
@@ -1177,6 +1267,19 @@ Remember to indent all code by two spaces.
   ... | yes ⟨ A , ⊢M ⟩ with A ≟Tp B
   ...   | no  A≢B             =  no  (¬switch ⊢M A≢B)
   ...   | yes A≡B             =  yes (⊢↑ ⊢M A≡B)
+  -- begin
+  inherit Γ (ƛ x ⇒ N) (A `× B) = no λ ()
+  inherit Γ zero (A `× B) =  no λ ()
+  inherit Γ (suc N) (A `× B) = no λ ()
+  inherit Γ `⟨ A , A₁ ⟩ `ℕ =  no λ ()
+  inherit Γ `⟨ A , A₁ ⟩ (B ⇒ B₁) = no λ ()
+  inherit Γ `⟨ A , B ⟩ (C `× D) with inherit Γ A C
+  ... | no ¬p = no λ { ⊢⟨ ⊢A , ⊢B ⟩ → ¬p ⊢A}
+  ... | yes p with inherit Γ B D
+  ...    | no ¬p = no λ{ ⊢⟨ ⊢A , ⊢B ⟩ →  ¬p ⊢B}
+  ...    | yes ⊢B = yes ⊢⟨ p , ⊢B ⟩
+  -- end
+
 ```
 
 ### Erasure
@@ -1185,6 +1288,9 @@ Remember to indent all code by two spaces.
   ∥_∥Tp : Type → DB.Type
   ∥ `ℕ ∥Tp             =  DB.`ℕ
   ∥ A ⇒ B ∥Tp          =  ∥ A ∥Tp DB.⇒ ∥ B ∥Tp
+  -- begin
+  ∥ A `× B ∥Tp = ∥ A ∥Tp DB.`× ∥ B ∥Tp
+  -- end
 
   ∥_∥Cx : Context → DB.Context
   ∥ ∅ ∥Cx              =  DB.∅
@@ -1200,6 +1306,10 @@ Remember to indent all code by two spaces.
   ∥ ⊢` ⊢x ∥⁺           =  DB.` ∥ ⊢x ∥∋
   ∥ ⊢L · ⊢M ∥⁺         =  ∥ ⊢L ∥⁺ DB.· ∥ ⊢M ∥⁻
   ∥ ⊢↓ ⊢M ∥⁺           =  ∥ ⊢M ∥⁻
+  -- begin
+  ∥ ⊢proj₁ ⊢x ∥⁺ = DB.`proj₁ ∥ ⊢x ∥⁺
+  ∥ ⊢proj₂ ⊢x ∥⁺ = DB.`proj₂ ∥ ⊢x ∥⁺
+  -- end
 
   ∥ ⊢ƛ ⊢N ∥⁻           =  DB.ƛ ∥ ⊢N ∥⁻
   ∥ ⊢zero ∥⁻           =  DB.`zero
@@ -1207,6 +1317,9 @@ Remember to indent all code by two spaces.
   ∥ ⊢case ⊢L ⊢M ⊢N ∥⁻  =  DB.case ∥ ⊢L ∥⁺ ∥ ⊢M ∥⁻ ∥ ⊢N ∥⁻
   ∥ ⊢μ ⊢M ∥⁻           =  DB.μ ∥ ⊢M ∥⁻
   ∥ ⊢↑ ⊢M refl ∥⁻      =  ∥ ⊢M ∥⁺
+  -- begin
+  ∥ ⊢⟨ A , B ⟩ ∥⁻ = DB.`⟨ ∥ A ∥⁻ , ∥ B ∥⁻ ⟩
+  -- end
 ```
 
 #### Exercise `bidirectional-mul` (recommended) {#bidirectional-mul}
