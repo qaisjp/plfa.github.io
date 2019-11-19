@@ -98,6 +98,7 @@ module Problem2 where
   data Type : Set where
     _⇒_   : Type → Type → Type
     `ℕ    : Type
+    Comp_ : Type → Type
 
   data Context : Set where
     ∅   : Context
@@ -160,6 +161,23 @@ module Problem2 where
       → Γ , A ⊢ A
         ----------
       → Γ ⊢ A
+
+    -- begin
+    error : ∀ {Γ A}
+        -----
+      → Γ ⊢ Comp A
+
+    ok : ∀ {Γ A}
+      → Γ ⊢ A
+        --------
+      → Γ ⊢ Comp A
+
+    letc : ∀ {Γ A B}
+      → Γ ⊢ Comp A
+      → Γ , A ⊢ Comp B
+        --------------
+      → Γ ⊢ Comp B
+    -- end
 ```
 
 ### Abbreviating de Bruijn indices
@@ -201,6 +219,9 @@ module Problem2 where
   rename ρ (`suc M)       =  `suc (rename ρ M)
   rename ρ (case L M N)   =  case (rename ρ L) (rename ρ M) (rename (ext ρ) N)
   rename ρ (μ N)          =  μ (rename (ext ρ) N)
+  rename ρ error = error
+  rename ρ (ok L) = ok (rename ρ L)
+  rename ρ (letc L M) = letc (rename ρ L) (rename (ext ρ) M)
 ```
 
 ### Simultaneous Substitution
@@ -223,6 +244,9 @@ module Problem2 where
   subst σ (`suc M)       =  `suc (subst σ M)
   subst σ (case L M N)   =  case (subst σ L) (subst σ M) (subst (exts σ) N)
   subst σ (μ N)          =  μ (subst (exts σ) N)
+  subst σ error = error
+  subst σ (ok L) = ok (subst σ L)
+  subst σ (letc L M) = letc (subst σ L) (subst (exts σ) M) 
 ```
 
 ### Single substitution
@@ -257,6 +281,14 @@ module Problem2 where
       → Value V
         --------------
       → Value (`suc V)
+
+    V-error : ∀ {Γ A}
+      → Value (error {Γ} {A} )
+
+    V-ok : ∀ {Γ A} {V : Γ ⊢ A}
+      → Value V
+        -------
+      → Value (ok V)
 ```
 
 ### Reduction
@@ -304,6 +336,27 @@ module Problem2 where
     β-μ : ∀ {Γ A} {N : Γ , A ⊢ A}
         ---------------
       → μ N —→ N [ μ N ]
+
+    -- begin
+    ξ-ok : ∀ {Γ A} {M M′ : Γ ⊢ A}
+      → M —→ M′
+        -----------------
+      → ok M —→ ok M′
+
+    ξ-letc : ∀ {Γ A B} {M M′ : Γ ⊢ Comp A} {N : Γ , A ⊢ Comp B}
+      → M —→ M′
+        -------
+      → letc M N —→ letc M′ N
+
+    β-error : ∀ {Γ A B} {T : Γ , A ⊢ Comp B}
+        -------------------
+      → letc (error) T —→ error
+
+    β-ok : ∀ {Γ A B} {N : Γ , A ⊢ Comp B} {V : Γ ⊢ A}
+      → Value V
+        -------
+      → letc (ok V) N —→ N [ V ]
+    -- end
 ```
 
 
@@ -367,6 +420,14 @@ module Problem2 where
   ...    | done V-zero                    =  step (β-zero)
   ...    | done (V-suc VL)                =  step (β-suc VL)
   progress (μ N)                          =  step (β-μ)
+  progress error = done V-error
+  progress (ok L) with progress L
+  ... | step L—→L′ = step (ξ-ok L—→L′)
+  ... | done x = done (V-ok x)
+  progress (letc L M) with progress L
+  ... | step L—→L′ = step (ξ-letc L—→L′)
+  ... | done V-error = step β-error
+  ... | done (V-ok x) = step (β-ok x)
 ```
 
 ### Evaluation
