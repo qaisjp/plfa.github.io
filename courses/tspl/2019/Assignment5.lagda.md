@@ -5,6 +5,8 @@ permalink : /TSPL/2019/Exam/
 ---
 
 
+## QP s1620208@inf.ed.ac.uk
+
 ```
 module Assignment5 where
 ```
@@ -164,6 +166,7 @@ module Problem2 where
 
     -- begin
     error : ∀ {Γ A}
+      → String
         -----
       → Γ ⊢ Comp A
 
@@ -219,9 +222,11 @@ module Problem2 where
   rename ρ (`suc M)       =  `suc (rename ρ M)
   rename ρ (case L M N)   =  case (rename ρ L) (rename ρ M) (rename (ext ρ) N)
   rename ρ (μ N)          =  μ (rename (ext ρ) N)
-  rename ρ error = error
+  -- begin
+  rename ρ (error msg) = error msg
   rename ρ (ok L) = ok (rename ρ L)
   rename ρ (letc L M) = letc (rename ρ L) (rename (ext ρ) M)
+  -- end
 ```
 
 ### Simultaneous Substitution
@@ -244,9 +249,11 @@ module Problem2 where
   subst σ (`suc M)       =  `suc (subst σ M)
   subst σ (case L M N)   =  case (subst σ L) (subst σ M) (subst (exts σ) N)
   subst σ (μ N)          =  μ (subst (exts σ) N)
-  subst σ error = error
+  -- begin
+  subst σ (error msg) = error ( msg)
   subst σ (ok L) = ok (subst σ L)
-  subst σ (letc L M) = letc (subst σ L) (subst (exts σ) M) 
+  subst σ (letc L M) = letc (subst σ L) (subst (exts σ) M)
+  -- end
 ```
 
 ### Single substitution
@@ -282,13 +289,17 @@ module Problem2 where
         --------------
       → Value (`suc V)
 
+    -- begin
     V-error : ∀ {Γ A}
-      → Value (error {Γ} {A} )
+      → (S : String)
+        ------
+      → Value (error {Γ} {A} S)
 
     V-ok : ∀ {Γ A} {V : Γ ⊢ A}
       → Value V
         -------
       → Value (ok V)
+   -- end
 ```
 
 ### Reduction
@@ -349,8 +360,16 @@ module Problem2 where
       → letc M N —→ letc M′ N
 
     β-error : ∀ {Γ A B} {T : Γ , A ⊢ Comp B}
+      → (msg : String)
         -------------------
-      → letc (error) T —→ error
+      → letc (error msg) T —→ error msg
+
+    -- Question to marker: I implemented error initially without the string.
+    --                     then I later added string support.
+    --                     Would it be OK if I just did {msg : String}
+    --                     and let agda figure the rest out itself?
+    --                     I noticed that it type checked, but I erred
+    --                     on this side, just to be safe.
 
     β-ok : ∀ {Γ A B} {N : Γ , A ⊢ Comp B} {V : Γ ⊢ A}
       → Value V
@@ -420,14 +439,16 @@ module Problem2 where
   ...    | done V-zero                    =  step (β-zero)
   ...    | done (V-suc VL)                =  step (β-suc VL)
   progress (μ N)                          =  step (β-μ)
-  progress error = done V-error
+  -- begin
+  progress (error msg) = done (V-error msg)
   progress (ok L) with progress L
   ... | step L—→L′ = step (ξ-ok L—→L′)
   ... | done x = done (V-ok x)
   progress (letc L M) with progress L
   ... | step L—→L′ = step (ξ-letc L—→L′)
-  ... | done V-error = step β-error
+  ... | done (V-error msg) = step (β-error msg)
   ... | done (V-ok x) = step (β-ok x)
+  -- end
 ```
 
 ### Evaluation
