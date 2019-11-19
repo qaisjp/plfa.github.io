@@ -42,11 +42,30 @@ Remember to indent all code by two spaces.
 
 ### (a)
 
+```
+  data Tree (A : Set) : Set where
+    leaf : A → Tree A
+    _branch_ : Tree A → Tree A → Tree A
+
+  data AllT {A : Set} (P : A → Set) : Tree A → Set where
+    leaf : ∀ {x : A} → P x → AllT P (leaf x)
+    _branch_ : ∀ {xt yt : Tree A} → (AllT P xt) → (AllT P yt) → AllT P (xt branch yt)
+
+  data AnyT {A : Set} (P : A → Set) : Tree A → Set where
+    leaf : ∀ {x : A} → P x → AnyT P (leaf x)
+    left : ∀ {xt yt : Tree A} → AnyT P xt → AnyT P (xt branch yt)
+    right : ∀ {xt yt : Tree A} → AnyT P yt → AnyT P (xt branch yt)
+```
 ### (b)
 
-### (c)
-
-
+```
+  b : {A : Set} {P : A → Set} {xt : Tree A} → AllT (¬_ ∘ P) xt → ¬(AnyT P xt)
+  b (leaf ¬x) = λ { (leaf x) → ¬x x}
+  b  (¬xt branch ¬yt) = λ
+    { (left AnyT-xt)  → b ¬xt AnyT-xt
+    ; (right AnyT-yt) → b ¬yt AnyT-yt
+    }
+```
 ## Problem 2
 
 Remember to indent all code by two spaces.
