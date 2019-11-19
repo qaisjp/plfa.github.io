@@ -98,6 +98,11 @@ values.
 
 Using the evaluator, confirm that two times two is four.
 
+```
+  mul-eval-fn = eval (gas 100) (mul · two · two)
+  mul-eval = eval (gas 100) (mul · two · two) 
+```
+
 
 ## More
 
