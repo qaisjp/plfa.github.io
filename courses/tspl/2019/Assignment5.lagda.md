@@ -560,6 +560,10 @@ module Problem3 where
     `case_[zero⇒_|suc_⇒_]    : Term⁺ → Term⁻ → Id → Term⁻ → Term⁻
     μ_⇒_                     : Id → Term⁻ → Term⁻
     _↑                       : Term⁺ → Term⁻
+    -- begin
+    tt                       : Term⁻
+    caseT_[tt⇒_]             : Term⁺ → Term⁻ → Term⁻
+    -- end
 ```
 
 ### Lookup
@@ -635,6 +639,18 @@ module Problem3 where
       → A ≡ B
         -------------
       → Γ ⊢ (M ↑) ↓ B
+
+    -- begin
+    ⊢tt : ∀ {Γ T}
+        ----------
+      → Γ ⊢ tt ↓ T
+
+    ⊢caseT : ∀ {Γ L T M A}
+      → Γ ⊢ L ↑ T
+      → Γ ⊢ M ↓ A
+        ---------
+      → Γ ⊢ caseT L [tt⇒ M ] ↓ A
+    -- end
 ```
 
 
@@ -776,4 +792,13 @@ module Problem3 where
   ... | yes ⟨ A , ⊢M ⟩ with A ≟Tp B
   ...   | no  A≢B             =  no  (¬switch ⊢M A≢B)
   ...   | yes A≡B             =  yes (⊢↑ ⊢M A≡B)
+
+  -- begin
+  inherit Γ caseT L [tt⇒ M ] A with synthesize Γ L
+  ... | no ¬⊢L = no λ { (⊢caseT {T = T} ⊢L ⊢M) → ¬⊢L ⟨ T , ⊢L ⟩}
+  ... | yes ⟨ T , ⊢L  ⟩ with inherit Γ M A
+  ...   | no ¬⊢M = no λ { (⊢caseT ⊢L ⊢M) → ¬⊢M ⊢M}
+  ...   | yes ⊢M = yes (⊢caseT ⊢L ⊢M)
+  inherit Γ tt T = yes ⊢tt
+  -- end
 ```
